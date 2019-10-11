@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class FindTranslationInteractor @Inject constructor(
     private val translationRepository: TranslationRepository
-) : UseCase<String, DictionaryEntry> {
+) : UseCase<String, List<DictionaryEntry>> {
 
-    override fun execute(parameter: String) = translationRepository.getTranslation(parameter)
+    override fun execute(parameter: String) = translationRepository.search(parameter)
 }
