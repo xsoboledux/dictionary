@@ -4,5 +4,5 @@ data class DictionaryEntry (
     val word: String,
     val translation: String,
     val language: Language,
-    val isFavorite: Boolean
+    val isFavorite: Boolean = false
 )

@@ -7,7 +7,7 @@ import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.TranslatedWord
 import javax.inject.Inject
 
-class TranslateInteractor
+class TranslateUseCase
 @Inject constructor(
     private val translationRepository: TranslationRepository
 ): UseCase<TranslatedWord, DictionaryEntry> {
