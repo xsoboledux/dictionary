@@ -58,9 +58,9 @@ class TranslationPresenter
         viewState?.showError(error.message)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        subscriptions.clear()
+    override fun detachView(view: TranslationView?) {
+        super.detachView(view)
+        subscriptions.dispose()
     }
 
     fun setFromLanguage(language: Language) {
@@ -84,4 +84,6 @@ class TranslationPresenter
         viewState?.setFromLanguage(fromLanguage)
         viewState?.setToLanguage(toLanguage)
     }
+
+    fun isSubscriptionsEmpty() = subscriptions.size() == 0
 }

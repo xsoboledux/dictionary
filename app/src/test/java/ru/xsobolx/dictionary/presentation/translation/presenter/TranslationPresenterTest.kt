@@ -109,4 +109,10 @@ class TranslationPresenterTest {
         verify(translationViewState, times(1)).setFromLanguage(expectedFromLanguage)
         verify(translationViewState, times(1)).setToLanguage(expectedToLanguage)
     }
+
+    @Test
+    fun shouldUnsubscribeOnDetachView() {
+        presenter.detachView(translationView)
+        assert(presenter.isSubscriptionsEmpty())
+    }
 }
