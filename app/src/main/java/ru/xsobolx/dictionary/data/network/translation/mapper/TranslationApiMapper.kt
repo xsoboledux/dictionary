@@ -12,16 +12,15 @@ interface TranslationApiMapper : Mapper<TranslationResponse, DictionaryEntry> {
             return DictionaryEntry(
                 word = "",
                 translation = value.text.toString(),
-                language = mapLanguage(value.lang)
+                fromLanguage = mapLanguage(value.lang).first,
+                toLanguage = mapLanguage(value.lang).second
             )
         }
 
-        private fun mapLanguage(lang: String): Language {
-            return lang
-                .split('-')
-                .filter { it != Language.RU.lang }
+        private fun mapLanguage(lang: String): Pair<Language, Language> {
+            val langs = lang .split('-', limit = 2)
                 .map { Language.valueOf(it) }
-                .first()
+            return langs[0] to langs[1]
         }
     }
 }

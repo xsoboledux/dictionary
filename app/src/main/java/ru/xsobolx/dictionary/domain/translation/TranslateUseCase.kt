@@ -7,11 +7,13 @@ import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.TranslatedWord
 import javax.inject.Inject
 
-class TranslateUseCase
-@Inject constructor(
-    private val translationRepository: TranslationRepository
-): UseCase<TranslatedWord, DictionaryEntry> {
-    override fun execute(parameter: TranslatedWord): Single<DictionaryEntry> {
-        return translationRepository.getTranslation(parameter)
+interface TranslateUseCase : UseCase<TranslatedWord, DictionaryEntry> {
+
+    class Impl @Inject constructor(
+        private val translationRepository: TranslationRepository
+    ) : TranslateUseCase {
+        override fun execute(parameter: TranslatedWord): Single<DictionaryEntry> {
+            return translationRepository.getTranslation(parameter)
+        }
     }
 }

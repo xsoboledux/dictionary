@@ -11,7 +11,7 @@ import ru.xsobolx.dictionary.data.repositories.translation.TranslationRepository
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 
 class TranslateUseCaseTest {
-    lateinit var translateUseCase: TranslateUseCase
+    private lateinit var translateUseCase: TranslateUseCase
     @Mock
     private lateinit var translationRepository: TranslationRepository
     private lateinit var testSubscriber: TestObserver<DictionaryEntry>
@@ -20,7 +20,7 @@ class TranslateUseCaseTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         testSubscriber = TestObserver()
-        translateUseCase = TranslateUseCase(translationRepository)
+        translateUseCase = TranslateUseCase.Impl(translationRepository)
     }
 
     @Test

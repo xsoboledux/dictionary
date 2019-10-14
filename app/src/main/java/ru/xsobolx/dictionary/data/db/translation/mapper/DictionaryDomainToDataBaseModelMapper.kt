@@ -12,7 +12,8 @@ interface DictionaryDomainToDataBaseModelMapper : Mapper<DictionaryEntry, Dictio
             return DictionaryDBModel(
                 word = value.word,
                 translation = value.translation.split(','),
-                language = value.language.lang,
+                fromLanguage = value.fromLanguage,
+                toLanguage = value.toLanguage,
                 isFavorite = value.isFavorite
             )
         }

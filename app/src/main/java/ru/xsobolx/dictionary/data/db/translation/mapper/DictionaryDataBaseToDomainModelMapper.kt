@@ -13,7 +13,8 @@ interface DictionaryDataBaseToDomainModelMapper : Mapper<DictionaryDBModel, Dict
             return DictionaryEntry(
                 word = value.word,
                 translation = value.translation.toString(),
-                language = Language.valueOf(value = value.language),
+                fromLanguage = value.fromLanguage,
+                toLanguage = value.toLanguage,
                 isFavorite = value.isFavorite
             )
         }

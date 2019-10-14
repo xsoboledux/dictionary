@@ -9,7 +9,8 @@ import ru.xsobolx.dictionary.domain.translation.model.TranslatedWord
 val testEntry = DictionaryEntry(
     word = "test",
     translation = "тест",
-    language = Language.EN,
+    fromLanguage = Language.EN,
+    toLanguage = Language.RU,
     isFavorite = false
 )
 val testTranslatedWord = TranslatedWord(
@@ -24,7 +25,8 @@ val testTranslationResponse = TranslationResponse(
 )
 val testDictionaryDataBaseModel = DictionaryDBModel(
     word = "test",
-    language = "en",
+    fromLanguage = Language.EN,
+    toLanguage = Language.RU,
     translation = listOf("тест"),
     isFavorite = true
 )
