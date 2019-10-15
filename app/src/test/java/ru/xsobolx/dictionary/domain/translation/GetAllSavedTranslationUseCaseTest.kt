@@ -2,9 +2,11 @@ package ru.xsobolx.dictionary.domain.translation
 
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import ru.xsobolx.dictionary.data.repositories.translation.TranslationRepository
@@ -33,8 +35,7 @@ class GetAllSavedTranslationUseCaseTest {
         verify(translationRepository, times(1)).getAllTranslations()
         verifyNoMoreInteractions(translationRepository)
 
-        testSubscriber.assertComplete()
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertResult(listOf(testEntry))
+        val expected = listOf(testEntry)
+        testSubscriber.assertResult(expected)
     }
 }

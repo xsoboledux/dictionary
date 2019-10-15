@@ -3,11 +3,13 @@ package ru.xsobolx.dictionary.presentation.translation.presenter
 import io.reactivex.Single
 import io.reactivex.schedulers.TestScheduler
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
+import ru.xsobolx.dictionary.RxRule
 import ru.xsobolx.dictionary.domain.translation.TranslateUseCase
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language
@@ -18,12 +20,15 @@ import ru.xsobolx.dictionary.presentation.translation.view.`TranslationView$$Sta
 import java.util.concurrent.TimeUnit
 
 class TranslationPresenterTest {
+
+    @Rule
+    @JvmField
+    val rule = RxRule()
+
     @Mock
     private lateinit var translationView: TranslationView
     @Mock
     private lateinit var translationViewState: `TranslationView$$State`
-    private lateinit var uiScheduler: TestScheduler
-    private lateinit var debounceScheduler: TestScheduler
     @Mock
     private lateinit var translateUseCase: TranslateUseCase
     private lateinit var presenter: TranslationPresenter
@@ -31,10 +36,8 @@ class TranslationPresenterTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        uiScheduler = TestScheduler()
-        debounceScheduler = TestScheduler()
         presenter =
-            TranslationPresenter(translateUseCase, uiScheduler = uiScheduler, debounceScheduler = debounceScheduler)
+            TranslationPresenter(translateUseCase)
         presenter.setFromLanguage(Language.EN)
         presenter.setToLanguage(Language.RU)
         presenter.attachView(translationView)
@@ -51,8 +54,7 @@ class TranslationPresenterTest {
         `when`(translateUseCase.execute(acualTranslatedWord)).thenReturn(Single.just(testEntry))
 
         presenter.onTextChanged("test")
-        debounceScheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS)
-        uiScheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS)
+        rule.scheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS)
 
         val expectedDictionaryEntry = testEntry
         verify(translateUseCase, times(1)).execute(acualTranslatedWord)
@@ -72,8 +74,7 @@ class TranslationPresenterTest {
         `when`(translateUseCase.execute(translatedWord)).thenReturn(Single.error(Throwable("test_error")))
 
         presenter.onTextChanged("test")
-        debounceScheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS)
-        uiScheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS)
+        rule.scheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS)
 
         verify(translateUseCase, times(1)).execute(translatedWord)
         verify(translationViewState, times(1)).showLoading()

@@ -33,8 +33,7 @@ class TranslateUseCaseTest {
         verify(translationRepository, times(1)).getTranslation(testTranslatedWord)
         verifyNoMoreInteractions(translationRepository)
 
-        testSubscriber.assertComplete()
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertResult(testEntry)
+        val expected = testEntry
+        testSubscriber.assertResult(expected)
     }
 }

@@ -33,8 +33,8 @@ class SearchTranslationUseCaseTest {
         verify(tranlsationRepository, times(1)).search("test")
         verifyNoMoreInteractions(tranlsationRepository)
 
-        testSubscriber.assertComplete()
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertResult(testEntry)
+        val expected = testEntry
+        testSubscriber.awaitTerminalEvent()
+        testSubscriber.assertResult(expected)
     }
 }
