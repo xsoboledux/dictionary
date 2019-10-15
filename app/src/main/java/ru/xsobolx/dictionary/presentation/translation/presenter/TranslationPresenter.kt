@@ -1,7 +1,7 @@
 package ru.xsobolx.dictionary.presentation.translation.presenter
 
 import com.arellomobile.mvp.InjectViewState
-import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import ru.xsobolx.dictionary.domain.translation.TranslateUseCase
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
@@ -17,9 +17,7 @@ private const val TEXT_INPUT_DELAY_IN_MILLISECONDS = 500L
 @InjectViewState
 class TranslationPresenter
 @Inject constructor(
-    private val translationUseCase: TranslateUseCase,
-    private val uiScheduler: Scheduler,
-    private val debounceScheduler: Scheduler
+    private val translationUseCase: TranslateUseCase
 ) : BasePresenter<TranslationView>() {
     private val textSubject = PublishSubject.create<String>()
     private lateinit var fromLanguage: Language
@@ -33,13 +31,13 @@ class TranslationPresenter
             throw AssertionError("toLanguage must be initialized")
         }
         val translateSubscription =
-            textSubject.debounce(TEXT_INPUT_DELAY_IN_MILLISECONDS, TimeUnit.MILLISECONDS, debounceScheduler)
+            textSubject.debounce(TEXT_INPUT_DELAY_IN_MILLISECONDS, TimeUnit.MILLISECONDS)
                 .switchMap { text ->
                     val translatedWord = TranslatedWord(text, fromLanguage, toLanguage)
                     translationUseCase.execute(translatedWord)
-                        .observeOn(uiScheduler)
                         .doOnSubscribe { viewState?.showLoading() }
                         .toObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
                 }
                 .subscribe(::handleSuccessTranslation, ::handleError)
         subscriptions.add(translateSubscription)

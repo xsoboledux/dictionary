@@ -15,7 +15,7 @@ interface TranslationRepository {
 
     fun search(value: String): Maybe<DictionaryEntry>
 
-    fun getAllTranslations(): Single<List<DictionaryEntry>>
+    fun getAllSavedTranslations(): Single<List<DictionaryEntry>>
 
     fun getTranslation(word: TranslatedWord): Single<DictionaryEntry>
 
@@ -32,7 +32,7 @@ interface TranslationRepository {
                 .map(dictionaryDataBaseToDomainModelMapper::map)
         }
 
-        override fun getAllTranslations(): Single<List<DictionaryEntry>> {
+        override fun getAllSavedTranslations(): Single<List<DictionaryEntry>> {
             return translationDAO.loadAllDictionaryEntries()
                 .map(dictionaryDataBaseToDomainModelMapper::map)
                 .collect({ mutableListOf<DictionaryEntry>() }, { acc, next -> acc.add(next) })

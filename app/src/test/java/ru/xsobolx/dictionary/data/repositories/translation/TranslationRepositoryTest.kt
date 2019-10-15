@@ -128,7 +128,7 @@ class TranslationRepositoryTest {
         `when`(translationDAO.loadAllDictionaryEntries()).thenReturn(Observable.just(testDictionaryDataBaseModel))
         `when`(dictionaryDataBaseToDomainModelMapper.map(testDictionaryDataBaseModel)).thenReturn(testEntry)
 
-        val actual = translationRepository.getAllTranslations()
+        val actual = translationRepository.getAllSavedTranslations()
         val testDictioanryListSubscriber = TestObserver<List<DictionaryEntry>>()
         actual.subscribe(testDictioanryListSubscriber)
 

@@ -20,21 +20,20 @@ class GetAllSavedTranslationUseCaseTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         testSubscriber = TestObserver()
-        getAllSavedTranslationUseCase = GetAllSavedTranslationUseCase(translationRepository)
+        getAllSavedTranslationUseCase = GetAllSavedTranslationUseCase.Impl(translationRepository)
     }
 
     @Test
     fun shouldReturnListOfDictionaryEntries() {
-        `when`(translationRepository.getAllTranslations()).thenReturn(Single.just(listOf(testEntry)))
+        `when`(translationRepository.getAllSavedTranslations()).thenReturn(Single.just(listOf(testEntry)))
 
         val actual = getAllSavedTranslationUseCase.execute(null)
         actual.subscribe(testSubscriber)
 
-        verify(translationRepository, times(1)).getAllTranslations()
+        verify(translationRepository, times(1)).getAllSavedTranslations()
         verifyNoMoreInteractions(translationRepository)
 
-        testSubscriber.assertComplete()
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertResult(listOf(testEntry))
+        val expected = listOf(testEntry)
+        testSubscriber.assertResult(expected)
     }
 }
