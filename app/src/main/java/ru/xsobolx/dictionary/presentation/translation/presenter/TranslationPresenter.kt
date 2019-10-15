@@ -1,14 +1,13 @@
 package ru.xsobolx.dictionary.presentation.translation.presenter
 
 import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import ru.xsobolx.dictionary.domain.translation.TranslateUseCase
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language
 import ru.xsobolx.dictionary.domain.translation.model.TranslatedWord
+import ru.xsobolx.dictionary.presentation.base.BasePresenter
 import ru.xsobolx.dictionary.presentation.translation.view.TranslationView
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -21,14 +20,12 @@ class TranslationPresenter
     private val translationUseCase: TranslateUseCase,
     private val uiScheduler: Scheduler,
     private val debounceScheduler: Scheduler
-) : MvpPresenter<TranslationView>() {
+) : BasePresenter<TranslationView>() {
     private val textSubject = PublishSubject.create<String>()
     private lateinit var fromLanguage: Language
     private lateinit var toLanguage: Language
-    private val subscriptions = CompositeDisposable()
 
-    override fun attachView(view: TranslationView?) {
-        super.attachView(view)
+    override fun onAttach(view: TranslationView?) {
         if (!this::fromLanguage.isInitialized) {
             throw AssertionError("fromLanguage must be initialized")
         }
@@ -40,9 +37,9 @@ class TranslationPresenter
                 .switchMap { text ->
                     val translatedWord = TranslatedWord(text, fromLanguage, toLanguage)
                     translationUseCase.execute(translatedWord)
+                        .observeOn(uiScheduler)
                         .doOnSubscribe { viewState?.showLoading() }
                         .toObservable()
-                        .observeOn(uiScheduler)
                 }
                 .subscribe(::handleSuccessTranslation, ::handleError)
         subscriptions.add(translateSubscription)
@@ -56,11 +53,6 @@ class TranslationPresenter
     private fun handleError(error: Throwable) {
         viewState?.hideLoading()
         viewState?.showError(error.message)
-    }
-
-    override fun detachView(view: TranslationView?) {
-        super.detachView(view)
-        subscriptions.dispose()
     }
 
     fun setFromLanguage(language: Language) {
@@ -84,6 +76,4 @@ class TranslationPresenter
         viewState?.setFromLanguage(fromLanguage)
         viewState?.setToLanguage(toLanguage)
     }
-
-    fun isSubscriptionsEmpty() = subscriptions.size() == 0
 }
