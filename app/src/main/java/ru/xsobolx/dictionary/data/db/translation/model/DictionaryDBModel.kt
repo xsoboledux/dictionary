@@ -10,9 +10,9 @@ const val DICTIONARY_ENTRIES_TABLE_NAME = "DictionaryEntries"
 @Fts4
 @Entity(tableName = DICTIONARY_ENTRIES_TABLE_NAME)
 data class DictionaryDBModel(
-    @PrimaryKey val word: String,
+    val word: String,
     val fromLanguage: Language,
     val toLanguage: Language,
-    val translation: List<String>,
+    val translation: String,
     val isFavorite: Boolean
 )

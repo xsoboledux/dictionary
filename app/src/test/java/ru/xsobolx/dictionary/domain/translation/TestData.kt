@@ -27,6 +27,6 @@ val testDictionaryDataBaseModel = DictionaryDBModel(
     word = "test",
     fromLanguage = Language.EN,
     toLanguage = Language.RU,
-    translation = listOf("тест"),
+    translation = "тест",
     isFavorite = true
 )

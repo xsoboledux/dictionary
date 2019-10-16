@@ -11,7 +11,7 @@ interface DictionaryDomainToDataBaseModelMapper : Mapper<DictionaryEntry, Dictio
         override fun map(value: DictionaryEntry): DictionaryDBModel {
             return DictionaryDBModel(
                 word = value.word,
-                translation = value.translation.split(','),
+                translation = value.translation,
                 fromLanguage = value.fromLanguage,
                 toLanguage = value.toLanguage,
                 isFavorite = value.isFavorite
