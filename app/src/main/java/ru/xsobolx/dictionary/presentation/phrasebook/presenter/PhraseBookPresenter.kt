@@ -31,7 +31,6 @@ class PhraseBookPresenter
                     return@switchMap getAllSavedTranslationsObservable
                 }
                 searchTranslationUseCase.execute(text)
-                    .map { listOf(it) }
                     .toObservable()
             }
             .doOnEach { view?.showLoading() }

@@ -29,7 +29,7 @@ interface TranslationRepository {
     ) : TranslationRepository {
         override fun search(value: String): Maybe<List<DictionaryEntry>> {
             return translationDAO.findTranslation(value)
-                .map{ it.map(dictionaryDataBaseToDomainModelMapper::map) }
+                .map { it.map(dictionaryDataBaseToDomainModelMapper::map) }
         }
 
         override fun getAllSavedTranslations(): Single<List<DictionaryEntry>> {
@@ -41,15 +41,12 @@ interface TranslationRepository {
 
         override fun getTranslation(word: TranslatedWord): Single<DictionaryEntry> {
             val lang = "${word.fromLanguage.lang}-${word.toLanguage.lang}"
-            val fromApi = Single.defer {
-                translationApi.translate(text = word.word, lang = lang)
-                    .map(translationApiMapper::map)
-                    .doOnSuccess { dictionaryEntry ->
-                        val dbModel = dictionaryDomainToDataBaseModelMapper.map(dictionaryEntry)
-                        translationDAO.insertDictionaryEntry(dbModel)
-                    }
-            }
-            return search(word.word).switchIfEmpty(fromApi)
+            return translationApi.translate(text = word.word, lang = lang)
+                .map(translationApiMapper::map)
+                .doOnSuccess { dictionaryEntry ->
+                    val dbModel = dictionaryDomainToDataBaseModelMapper.map(dictionaryEntry)
+                    translationDAO.insertDictionaryEntry(dbModel)
+                }
         }
     }
 }

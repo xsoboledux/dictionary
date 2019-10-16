@@ -25,16 +25,16 @@ class SearchTranslationUseCaseTest {
 
     @Test
     fun shouldSearchDictionaryEntry() {
-        `when`(tranlsationRepository.search("test")).thenReturn(Maybe.just(testEntry))
+        `when`(tranlsationRepository.search("test")).thenReturn(Maybe.just(listOf(testEntry)))
 
         val actual = searchTranslationUseCase.execute("test")
-        actual.subscribe(testSubscriber)
+        val listSubscriber = TestObserver<List<DictionaryEntry>>()
+        actual.subscribe(listSubscriber)
 
         verify(tranlsationRepository, times(1)).search("test")
         verifyNoMoreInteractions(tranlsationRepository)
 
         val expected = testEntry
-        testSubscriber.awaitTerminalEvent()
         testSubscriber.assertResult(expected)
     }
 }

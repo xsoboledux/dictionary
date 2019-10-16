@@ -64,7 +64,7 @@ class PhraseBookPresenterTest {
     fun shouldSearchTranslationsOnSearch() {
         val allEntries = listOf(testEntry, testEntry, testEntry)
         val searchedEntry = testEntry
-        `when`(searchTranslationUseCase.execute("test")).thenReturn(Single.just(searchedEntry))
+        `when`(searchTranslationUseCase.execute("test")).thenReturn(Single.just(listOf(searchedEntry)))
         `when`(getAllSavedTranslationUseCase.execute(null)).thenReturn(Single.just(allEntries))
 
         presenter.attachView(phraseBookView)

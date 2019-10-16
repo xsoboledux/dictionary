@@ -1,7 +1,6 @@
 package ru.xsobolx.dictionary.data.repositories.translation
 
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import org.junit.Before
@@ -56,7 +55,9 @@ class TranslationRepositoryTest {
             )
         )
         `when`(translationApiMapper.map(testTranslationResponse)).thenReturn(testEntry)
-        `when`(dictionaryDomainToDataBaseModelMapper.map(testEntry)).thenReturn(testDictionaryDataBaseModel)
+        `when`(dictionaryDomainToDataBaseModelMapper.map(testEntry)).thenReturn(
+            testDictionaryDataBaseModel
+        )
 
         val actual = translationRepository.getTranslation(testTranslatedWord)
         actual.subscribe(testSubscriber)
@@ -79,8 +80,16 @@ class TranslationRepositoryTest {
 
     @Test
     fun shouldReturnDictionaryEntryFromDBAndDoNotInvokeApi() {
-        `when`(translationDAO.findTranslation("test")).thenReturn(Maybe.just(testDictionaryDataBaseModel))
-        `when`(dictionaryDataBaseToDomainModelMapper.map(testDictionaryDataBaseModel)).thenReturn(testEntry)
+        `when`(translationDAO.findTranslation("test")).thenReturn(
+            Maybe.just(
+                listOf(
+                    testDictionaryDataBaseModel
+                )
+            )
+        )
+        `when`(dictionaryDataBaseToDomainModelMapper.map(testDictionaryDataBaseModel)).thenReturn(
+            testEntry
+        )
         `when`(translationApi.translate(testTranslatedWord.word, "en-ru")).thenReturn(
             Single.just(
                 testTranslationResponse
@@ -105,11 +114,20 @@ class TranslationRepositoryTest {
 
     @Test
     fun shouldReturnDictionaryEntryOnSearch() {
-        `when`(translationDAO.findTranslation("test")).thenReturn(Maybe.just(testDictionaryDataBaseModel))
-        `when`(dictionaryDataBaseToDomainModelMapper.map(testDictionaryDataBaseModel)).thenReturn(testEntry)
+        `when`(translationDAO.findTranslation("test")).thenReturn(
+            Maybe.just(
+                listOf(
+                    testDictionaryDataBaseModel
+                )
+            )
+        )
+        `when`(dictionaryDataBaseToDomainModelMapper.map(testDictionaryDataBaseModel)).thenReturn(
+            testEntry
+        )
 
         val actual = translationRepository.search("test")
-        actual.subscribe(testSubscriber)
+        val listSubscriber = TestObserver<List<DictionaryEntry>>()
+        actual.subscribe(listSubscriber)
 
         verify(translationDAO, times(1)).findTranslation("test")
         verify(dictionaryDataBaseToDomainModelMapper, times(1)).map(testDictionaryDataBaseModel)
@@ -118,15 +136,21 @@ class TranslationRepositoryTest {
         verifyZeroInteractions(translationApiMapper)
         verifyZeroInteractions(translationApi)
 
-        testSubscriber.assertComplete()
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertResult(testEntry)
+        listSubscriber.assertResult(listOf(testEntry))
     }
 
     @Test
     fun shouldReturnListOfDictionaryEntriesOnGetAllTranslations() {
-        `when`(translationDAO.loadAllDictionaryEntries()).thenReturn(Observable.just(testDictionaryDataBaseModel))
-        `when`(dictionaryDataBaseToDomainModelMapper.map(testDictionaryDataBaseModel)).thenReturn(testEntry)
+        `when`(translationDAO.loadAllDictionaryEntries()).thenReturn(
+            Single.just(
+                listOf(
+                    testDictionaryDataBaseModel
+                )
+            )
+        )
+        `when`(dictionaryDataBaseToDomainModelMapper.map(testDictionaryDataBaseModel)).thenReturn(
+            testEntry
+        )
 
         val actual = translationRepository.getAllSavedTranslations()
         val testDictioanryListSubscriber = TestObserver<List<DictionaryEntry>>()
