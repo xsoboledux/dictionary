@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <RelativeLayout
+            android:id="@+id/choose_language_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <Spinner
+                android:id="@+id/from_language_spinner"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+
+        <ImageButton
+                android:id="@+id/switch_language_button"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
+                android:padding="8dp"
+                android:src="@drawable/ic_action_switch" />
+
+        <Spinner
+                android:id="@+id/to_language_spinner"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+    </RelativeLayout>
+
+    <EditText
+            android:id="@+id/translate_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/choose_language_layout"
+            android:layout_marginBottom="12dp" />
+
+    <TextView
+            android:id="@+id/translation_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/translate_edit_text"
+            android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+</RelativeLayout>

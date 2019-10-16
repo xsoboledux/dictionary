@@ -1,8 +1,13 @@
 package ru.xsobolx.dictionary.di.translation
 
-import dagger.Component
-import ru.xsobolx.dictionary.di.app.AppComponent
+import dagger.Subcomponent
 
 @TranslationScope
-@Component(modules = [TranslationModule::class], dependencies = [AppComponent::class])
-interface TranslationComponent
+@Subcomponent(modules = [TranslationModule::class])
+interface TranslationComponent {
+
+    @Subcomponent.Builder
+    interface Builder {
+        fun build(): TranslationComponent
+    }
+}

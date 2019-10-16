@@ -6,7 +6,7 @@ import ru.xsobolx.dictionary.di.app.AppModule
 import ru.xsobolx.dictionary.di.app.DaggerAppComponent
 
 class DictionaryApp : Application() {
-    private var appComponent: AppComponent? = null
+    var appComponent: AppComponent? = null
 
     override fun onCreate() {
         super.onCreate()
