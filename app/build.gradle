@@ -31,7 +31,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.1.0'
 
-    implementation 'com.android.support:recyclerview-v7:29.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
     // rxjava
     implementation "io.reactivex.rxjava2:rxjava:2.2.13"
@@ -65,7 +65,13 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:core:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation ("android.arch.core:core-testing:$room_version") {
+        exclude module: 'support-compat'
+        exclude module: 'support-annotations'
+        exclude module: 'support-core-utils'
+    }
 
     // mockito
     testImplementation "org.mockito:mockito-core:2.25.0"
