@@ -35,10 +35,10 @@ class TranslationPresenter
                 .switchMap { text ->
                     val translatedWord = TranslatedWord(text, fromLanguage, toLanguage)
                     translationUseCase.execute(translatedWord)
-                        .doOnSubscribe { viewState?.showLoading() }
                         .toObservable()
-                        .observeOn(AndroidSchedulers.mainThread())
                 }
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnEach { viewState?.showLoading() }
                 .subscribe(::handleSuccessTranslation, ::handleError)
         subscriptions.add(translateSubscription)
     }
