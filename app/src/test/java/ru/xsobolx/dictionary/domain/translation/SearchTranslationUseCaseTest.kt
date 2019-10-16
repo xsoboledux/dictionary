@@ -14,7 +14,7 @@ class SearchTranslationUseCaseTest {
     @Mock
     private lateinit var tranlsationRepository: TranslationRepository
     private lateinit var searchTranslationUseCase: SearchTranslationUseCase
-    private lateinit var testSubscriber: TestObserver<DictionaryEntry>
+    private lateinit var testSubscriber: TestObserver<List<DictionaryEntry>>
 
     @Before
     fun setUp() {
@@ -28,13 +28,13 @@ class SearchTranslationUseCaseTest {
         `when`(tranlsationRepository.search("test")).thenReturn(Maybe.just(listOf(testEntry)))
 
         val actual = searchTranslationUseCase.execute("test")
-        val listSubscriber = TestObserver<List<DictionaryEntry>>()
-        actual.subscribe(listSubscriber)
+        actual.subscribe(testSubscriber)
 
         verify(tranlsationRepository, times(1)).search("test")
         verifyNoMoreInteractions(tranlsationRepository)
 
-        val expected = testEntry
+        val expected = listOf(testEntry)
+        testSubscriber.awaitTerminalEvent()
         testSubscriber.assertResult(expected)
     }
 }

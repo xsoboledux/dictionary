@@ -47,8 +47,7 @@ class TranslationRepositoryTest {
     }
 
     @Test
-    fun shouldReturnDictionaryEntryFromApiIfIsNotInDBAndInsertToDb() {
-        `when`(translationDAO.findTranslation("test")).thenReturn(Maybe.empty())
+    fun shouldReturnDictionaryEntryOnGetTranslation() {
         `when`(translationApi.translate(testTranslatedWord.word, "en-ru")).thenReturn(
             Single.just(
                 testTranslationResponse
@@ -62,7 +61,6 @@ class TranslationRepositoryTest {
         val actual = translationRepository.getTranslation(testTranslatedWord)
         actual.subscribe(testSubscriber)
 
-        verify(translationDAO, times(1)).findTranslation("test")
         verify(translationApi, times(1)).translate(testTranslatedWord.word, "en-ru")
         verify(translationApiMapper, times(1)).map(testTranslationResponse)
         verify(dictionaryDomainToDataBaseModelMapper, times(1)).map(testEntry)
@@ -72,40 +70,6 @@ class TranslationRepositoryTest {
         verifyNoMoreInteractions(dictionaryDomainToDataBaseModelMapper)
         verifyNoMoreInteractions(translationDAO)
         verifyZeroInteractions(dictionaryDataBaseToDomainModelMapper)
-
-        testSubscriber.assertComplete()
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertResult(testEntry)
-    }
-
-    @Test
-    fun shouldReturnDictionaryEntryFromDBAndDoNotInvokeApi() {
-        `when`(translationDAO.findTranslation("test")).thenReturn(
-            Maybe.just(
-                listOf(
-                    testDictionaryDataBaseModel
-                )
-            )
-        )
-        `when`(dictionaryDataBaseToDomainModelMapper.map(testDictionaryDataBaseModel)).thenReturn(
-            testEntry
-        )
-        `when`(translationApi.translate(testTranslatedWord.word, "en-ru")).thenReturn(
-            Single.just(
-                testTranslationResponse
-            )
-        )
-        `when`(translationApiMapper.map(testTranslationResponse)).thenReturn(testEntry)
-
-
-        val actual = translationRepository.getTranslation(testTranslatedWord)
-        actual.subscribe(testSubscriber)
-
-        verify(translationDAO, times(1)).findTranslation("test")
-        verify(dictionaryDataBaseToDomainModelMapper, times(1)).map(testDictionaryDataBaseModel)
-        verifyZeroInteractions(translationApi)
-        verifyNoMoreInteractions(translationDAO)
-        verifyNoMoreInteractions(dictionaryDataBaseToDomainModelMapper)
 
         testSubscriber.assertComplete()
         testSubscriber.assertNoErrors()
