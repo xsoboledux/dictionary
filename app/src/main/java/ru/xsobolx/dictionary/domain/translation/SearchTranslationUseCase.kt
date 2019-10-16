@@ -7,14 +7,14 @@ import ru.xsobolx.dictionary.domain.base.UseCase
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import javax.inject.Inject
 
-interface SearchTranslationUseCase : UseCase<String, DictionaryEntry> {
+interface SearchTranslationUseCase : UseCase<String, List<DictionaryEntry>> {
     class Impl
     @Inject
     constructor(
         private val translationRepository: TranslationRepository
     ) : SearchTranslationUseCase {
 
-        override fun execute(parameter: String): Single<DictionaryEntry> {
+        override fun execute(parameter: String): Single<List<DictionaryEntry>> {
             return translationRepository.search(parameter)
                 .toSingle()
                 .subscribeOn(Schedulers.io())

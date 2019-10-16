@@ -43,11 +43,26 @@ class TranslationDAOTest {
 
     @Test
     fun getAllEntriesAfterInsert() {
-        translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel)
+        translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel1)
+            .subscribe(testSubscriber)
+        testSubscriber.assertComplete()
+        translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel2)
+            .subscribe(testSubscriber)
+        testSubscriber.assertComplete()
+        translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel3)
+            .subscribe(testSubscriber)
+        testSubscriber.assertComplete()
 
-        val entries = translationDAO.loadAllDictionaryEntries()
-        entries.subscribe(testSubscriber)
+        val nSub = TestObserver<List<DictionaryDBModel>>()
+        translationDAO.loadAllDictionaryEntries()
+            .subscribe(nSub)
 
-        testSubscriber.assertResult(testDictionaryDataBaseModel)
+        nSub.assertResult(
+            listOf(
+                testDictionaryDataBaseModel1,
+                testDictionaryDataBaseModel2,
+                testDictionaryDataBaseModel3
+            )
+        )
     }
 }

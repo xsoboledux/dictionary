@@ -23,8 +23,22 @@ val testTranslationResponse = TranslationResponse(
     lang = "en-ru",
     text = listOf("тест")
 )
-val testDictionaryDataBaseModel = DictionaryDBModel(
-    word = "test",
+val testDictionaryDataBaseModel1 = DictionaryDBModel(
+    word = "test1",
+    fromLanguage = Language.EN,
+    toLanguage = Language.RU,
+    translation = "тест",
+    isFavorite = true
+)
+val testDictionaryDataBaseModel2 = DictionaryDBModel(
+    word = "test2",
+    fromLanguage = Language.EN,
+    toLanguage = Language.RU,
+    translation = "тест",
+    isFavorite = true
+)
+val testDictionaryDataBaseModel3 = DictionaryDBModel(
+    word = "test3",
     fromLanguage = Language.EN,
     toLanguage = Language.RU,
     translation = "тест",

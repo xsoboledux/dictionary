@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 interface TranslationRepository {
 
-    fun search(value: String): Maybe<DictionaryEntry>
+    fun search(value: String): Maybe<List<DictionaryEntry>>
 
     fun getAllSavedTranslations(): Single<List<DictionaryEntry>>
 
@@ -27,16 +27,16 @@ interface TranslationRepository {
         private val translationApi: TranslationApi,
         private val translationApiMapper: TranslationApiMapper
     ) : TranslationRepository {
-        override fun search(value: String): Maybe<DictionaryEntry> {
+        override fun search(value: String): Maybe<List<DictionaryEntry>> {
             return translationDAO.findTranslation(value)
-                .map(dictionaryDataBaseToDomainModelMapper::map)
+                .map{ it.map(dictionaryDataBaseToDomainModelMapper::map) }
         }
 
         override fun getAllSavedTranslations(): Single<List<DictionaryEntry>> {
             return translationDAO.loadAllDictionaryEntries()
-                .map(dictionaryDataBaseToDomainModelMapper::map)
-                .collect({ mutableListOf<DictionaryEntry>() }, { acc, next -> acc.add(next) })
-                .map { it.toList() }
+                .map { it.map(dictionaryDataBaseToDomainModelMapper::map) }
+//                .collect({ mutableListOf<DictionaryEntry>() }, { acc, next -> acc.add(next) })
+//                .map { it.toList() }
         }
 
         override fun getTranslation(word: TranslatedWord): Single<DictionaryEntry> {
