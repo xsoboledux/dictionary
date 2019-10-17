@@ -1,6 +1,7 @@
 package ru.xsobolx.dictionary.presentation.favorites.presenter
 
 import com.arellomobile.mvp.InjectViewState
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import ru.xsobolx.dictionary.domain.translation.GetAllSavedTranslationUseCase
@@ -19,16 +20,18 @@ class FavoritesPresenter
     private val onFavoriteClickSubject = PublishSubject.create<DictionaryEntry>()
 
     override fun onAttach(view: FavoritesView?) {
-        val favoritesObservable = getAllSavedTranslationUseCase.execute(null)
-            .toObservable()
+        val favoritesObservable = Observable.defer {
+            getAllSavedTranslationUseCase.execute(Unit)
+                .toObservable()
+        }
+            .doOnNext { view?.showLoading() }
             .map { it.filter { entry -> entry.isFavorite } }
             .share()
 
-        val getFavoritesTranslationsSubscription = favoritesObservable
+        val favoritesSubscription = favoritesObservable
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnEach { view?.showLoading() }
             .subscribe(::handleSuccessGetFavoriteTranslations, ::handleError)
-        subscriptions.add(getFavoritesTranslationsSubscription)
+        subscriptions.add(favoritesSubscription)
 
         val onFavoriteClickSubscription = onFavoriteClickSubject
             .map { entry ->
@@ -38,7 +41,6 @@ class FavoritesPresenter
             .switchMapSingle(makeTranslationFavoriteUseCase::execute)
             .observeOn(AndroidSchedulers.mainThread())
             .switchMap { favoritesObservable }
-            .doOnEach { view?.showLoading() }
             .subscribe(::handleSuccessGetFavoriteTranslations, ::handleError)
         subscriptions.add(onFavoriteClickSubscription)
     }
