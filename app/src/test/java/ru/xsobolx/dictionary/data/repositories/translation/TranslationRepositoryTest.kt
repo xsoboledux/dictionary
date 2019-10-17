@@ -78,7 +78,7 @@ class TranslationRepositoryTest {
 
     @Test
     fun shouldReturnDictionaryEntryOnSearch() {
-        `when`(translationDAO.findTranslation("test")).thenReturn(
+        `when`(translationDAO.searchTranslation("test")).thenReturn(
             Maybe.just(
                 listOf(
                     testDictionaryDataBaseModel
@@ -93,7 +93,7 @@ class TranslationRepositoryTest {
         val listSubscriber = TestObserver<List<DictionaryEntry>>()
         actual.subscribe(listSubscriber)
 
-        verify(translationDAO, times(1)).findTranslation("test")
+        verify(translationDAO, times(1)).searchTranslation("test")
         verify(dictionaryDataBaseToDomainModelMapper, times(1)).map(testDictionaryDataBaseModel)
         verifyNoMoreInteractions(translationDAO)
         verifyNoMoreInteractions(dictionaryDataBaseToDomainModelMapper)

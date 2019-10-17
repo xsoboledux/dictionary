@@ -28,7 +28,7 @@ interface TranslationRepository {
         private val translationApiMapper: TranslationApiMapper
     ) : TranslationRepository {
         override fun search(value: String): Maybe<List<DictionaryEntry>> {
-            return translationDAO.findTranslation(value)
+            return translationDAO.searchTranslation(value)
                 .map { it.map(dictionaryDataBaseToDomainModelMapper::map) }
         }
 

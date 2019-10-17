@@ -13,12 +13,12 @@ interface TranslationDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDictionaryEntry(entry: DictionaryDBModel) : Completable
 
-    @Update
-    fun updateDictionaryEntry(entry: DictionaryDBModel) : Completable
+    @Query("UPDATE $DICTIONARY_ENTRIES_TABLE_NAME SET isFavorite = :isFavorite WHERE word = :word")
+    fun updateDictionaryEntry(word: String, isFavorite: Boolean) : Completable
 
     @Query("SELECT * FROM $DICTIONARY_ENTRIES_TABLE_NAME")
     fun loadAllDictionaryEntries() : Single<List<DictionaryDBModel>>
 
     @Query("SELECT * FROM $DICTIONARY_ENTRIES_TABLE_NAME WHERE word LIKE :search OR translation LIKE :search")
-    fun findTranslation(search: String) : Maybe<List<DictionaryDBModel>>
+    fun searchTranslation(search: String) : Maybe<List<DictionaryDBModel>>
 }

@@ -28,19 +28,19 @@ val testDictionaryDataBaseModel1 = DictionaryDBModel(
     fromLanguage = Language.EN,
     toLanguage = Language.RU,
     translation = "тест",
-    isFavorite = true
+    isFavorite = false
 )
 val testDictionaryDataBaseModel2 = DictionaryDBModel(
     word = "test2",
     fromLanguage = Language.EN,
     toLanguage = Language.RU,
     translation = "тест",
-    isFavorite = true
+    isFavorite = false
 )
 val testDictionaryDataBaseModel3 = DictionaryDBModel(
     word = "test3",
     fromLanguage = Language.EN,
     toLanguage = Language.RU,
     translation = "тест",
-    isFavorite = true
+    isFavorite = false
 )
