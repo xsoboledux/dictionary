@@ -41,7 +41,7 @@ class PhraseBookPresenter
     }
 
     private fun handleSuccessGetAllTranslations(translations: List<DictionaryEntry>) {
-        viewState.hideLoading()
+        viewState?.hideLoading()
         viewState?.showEntries(translations)
     }
 
