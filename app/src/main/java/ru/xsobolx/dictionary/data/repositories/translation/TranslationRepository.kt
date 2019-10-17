@@ -1,5 +1,6 @@
 package ru.xsobolx.dictionary.data.repositories.translation
 
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import ru.xsobolx.dictionary.data.db.translation.dao.TranslationDAO
@@ -20,6 +21,8 @@ interface TranslationRepository {
 
     fun getTranslation(word: TranslatedWord): Single<DictionaryEntry>
 
+    fun updateTranslation(entry: DictionaryEntry): Completable
+
     class Impl
     @Inject constructor(
         private val translationDAO: TranslationDAO,
@@ -28,6 +31,10 @@ interface TranslationRepository {
         private val translationApi: TranslationApi,
         private val translationApiMapper: TranslationApiMapper
     ) : TranslationRepository {
+        override fun updateTranslation(entry: DictionaryEntry): Completable {
+           return translationDAO.updateDictionaryEntry(entry.word, entry.isFavorite)
+        }
+
         override fun search(value: String): Maybe<List<DictionaryEntry>> {
             return translationDAO.searchTranslation(value)
                 .map { it.map(dictionaryDataBaseToDomainModelMapper::map) }

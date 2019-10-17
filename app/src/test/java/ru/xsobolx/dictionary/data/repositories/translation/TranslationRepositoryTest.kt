@@ -1,5 +1,6 @@
 package ru.xsobolx.dictionary.data.repositories.translation
 
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
@@ -63,7 +64,7 @@ class TranslationRepositoryTest {
         val actual = translationRepository.getTranslation(testTranslatedWord)
         actual.subscribe(testSubscriber)
 
-        verify(translationApi, times(1)).translate(testTranslatedWord.word, "en-ru")
+        verify(translationApi, times(1)).translate(request)
         verify(translationApiMapper, times(1)).map(testTranslationResponse)
         verify(dictionaryDomainToDataBaseModelMapper, times(1)).map(testEntry)
         verify(translationDAO, times(1)).insertDictionaryEntry(testDictionaryDataBaseModel)
@@ -133,5 +134,19 @@ class TranslationRepositoryTest {
         testDictioanryListSubscriber.assertComplete()
         testDictioanryListSubscriber.assertNoErrors()
         testDictioanryListSubscriber.assertResult(listOf(testEntry))
+    }
+
+    @Test
+    fun shouldUpdateTranslation() {
+        val entryToUpdate = testEntry
+        `when`(translationDAO.updateDictionaryEntry(entryToUpdate.word, entryToUpdate.isFavorite))
+            .thenReturn(Completable.complete())
+
+        val actual = translationRepository.updateTranslation(testEntry)
+        actual.subscribe(testSubscriber)
+
+        verify(translationDAO, times(1)).updateDictionaryEntry("test", false)
+        verifyNoMoreInteractions(translationDAO)
+        testSubscriber.assertComplete()
     }
 }
