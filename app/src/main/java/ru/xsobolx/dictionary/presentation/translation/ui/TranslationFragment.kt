@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
+import moxy.MvpAppCompatFragment
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import ru.xsobolx.dictionary.R
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language
@@ -15,7 +15,7 @@ import ru.xsobolx.dictionary.presentation.translation.view.TranslationView
 import javax.inject.Inject
 import javax.inject.Provider
 
-class TranslationFragment : Fragment(), TranslationView {
+class TranslationFragment : MvpAppCompatFragment(), TranslationView {
 
     @InjectPresenter
     lateinit var translationPresenter: TranslationPresenter

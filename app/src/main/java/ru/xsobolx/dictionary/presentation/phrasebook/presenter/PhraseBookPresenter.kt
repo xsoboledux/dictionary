@@ -1,9 +1,9 @@
 package ru.xsobolx.dictionary.presentation.phrasebook.presenter
 
-import com.arellomobile.mvp.InjectViewState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
+import moxy.InjectViewState
 import ru.xsobolx.dictionary.domain.translation.GetAllSavedTranslationUseCase
 import ru.xsobolx.dictionary.domain.translation.SearchTranslationUseCase
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry

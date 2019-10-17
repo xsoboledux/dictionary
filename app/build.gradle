@@ -23,6 +23,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -43,10 +47,10 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     // moxy
-    def moxy_version = "1.5.5"
-    implementation "com.arello-mobile:moxy:$moxy_version"
-    kapt "com.arello-mobile:moxy-compiler:$moxy_version"
-    implementation "com.arello-mobile:moxy-android:$moxy_version"
+    def moxyVersion = "2.0.2"
+    implementation "com.github.moxy-community:moxy:$moxyVersion"
+    kapt "com.github.moxy-community:moxy-compiler:$moxyVersion"
+    implementation "com.github.moxy-community:moxy-androidx:$moxyVersion"
 
     // gson
     implementation 'com.google.code.gson:gson:2.8.6'

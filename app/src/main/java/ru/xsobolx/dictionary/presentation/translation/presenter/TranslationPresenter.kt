@@ -1,8 +1,8 @@
 package ru.xsobolx.dictionary.presentation.translation.presenter
 
-import com.arellomobile.mvp.InjectViewState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
+import moxy.InjectViewState
 import ru.xsobolx.dictionary.domain.translation.TranslateUseCase
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language

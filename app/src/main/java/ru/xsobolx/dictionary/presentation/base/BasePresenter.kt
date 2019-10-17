@@ -1,7 +1,7 @@
 package ru.xsobolx.dictionary.presentation.base
 
-import com.arellomobile.mvp.MvpPresenter
 import io.reactivex.disposables.CompositeDisposable
+import moxy.MvpPresenter
 
 abstract class BasePresenter<V : BaseMvpView> : MvpPresenter<V>() {
     protected val subscriptions = CompositeDisposable()
