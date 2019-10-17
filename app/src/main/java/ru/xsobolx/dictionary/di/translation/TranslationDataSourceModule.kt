@@ -8,7 +8,7 @@ import ru.xsobolx.dictionary.data.db.translation.dao.TranslationDAO
 import ru.xsobolx.dictionary.data.network.translation.TranslationApi
 
 @Module
-class TranslationModule {
+class TranslationDataSourceModule {
 
     @Provides
     @TranslationScope

@@ -3,9 +3,12 @@ package ru.xsobolx.dictionary.di.translation
 import dagger.Subcomponent
 import ru.xsobolx.dictionary.data.db.translation.dao.TranslationDAO
 import ru.xsobolx.dictionary.data.network.translation.TranslationApi
+import ru.xsobolx.dictionary.domain.translation.GetAllSavedTranslationUseCase
+import ru.xsobolx.dictionary.domain.translation.SearchTranslationUseCase
+import ru.xsobolx.dictionary.domain.translation.TranslateUseCase
 
 @TranslationScope
-@Subcomponent(modules = [TranslationModule::class])
+@Subcomponent(modules = [TranslationDataSourceModule::class, TranslationDomainModule::class])
 interface TranslationComponent {
 
     @Subcomponent.Builder
@@ -13,7 +16,9 @@ interface TranslationComponent {
         fun build(): TranslationComponent
     }
 
-    fun translationApi(translationApi: TranslationApi): TranslationApi
+    fun translateUseCase(): TranslateUseCase
 
-    fun translationDAO(translationDAO: TranslationDAO): TranslationDAO
+    fun getAllSavedTranslationUseCase(): GetAllSavedTranslationUseCase
+
+    fun searchTranslationUseCase(): SearchTranslationUseCase
 }
