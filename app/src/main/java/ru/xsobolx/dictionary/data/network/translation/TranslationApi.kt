@@ -1,11 +1,12 @@
 package ru.xsobolx.dictionary.data.network.translation
 
 import io.reactivex.Single
+import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface TranslationApi {
     @POST()
-    fun translate(text: String, lang: String) : Single<TranslationResponse>
+    fun translate(@Body request: TranslationRequest) : Single<TranslationResponse>
 }
 
 data class TranslationRequest(

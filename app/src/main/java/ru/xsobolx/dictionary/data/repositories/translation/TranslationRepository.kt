@@ -6,6 +6,7 @@ import ru.xsobolx.dictionary.data.db.translation.dao.TranslationDAO
 import ru.xsobolx.dictionary.data.db.translation.mapper.DictionaryDataBaseToDomainModelMapper
 import ru.xsobolx.dictionary.data.db.translation.mapper.DictionaryDomainToDataBaseModelMapper
 import ru.xsobolx.dictionary.data.network.translation.TranslationApi
+import ru.xsobolx.dictionary.data.network.translation.TranslationRequest
 import ru.xsobolx.dictionary.data.network.translation.mapper.TranslationApiMapper
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.TranslatedWord
@@ -35,13 +36,12 @@ interface TranslationRepository {
         override fun getAllSavedTranslations(): Single<List<DictionaryEntry>> {
             return translationDAO.loadAllDictionaryEntries()
                 .map { it.map(dictionaryDataBaseToDomainModelMapper::map) }
-//                .collect({ mutableListOf<DictionaryEntry>() }, { acc, next -> acc.add(next) })
-//                .map { it.toList() }
         }
 
         override fun getTranslation(word: TranslatedWord): Single<DictionaryEntry> {
             val lang = "${word.fromLanguage.lang}-${word.toLanguage.lang}"
-            return translationApi.translate(text = word.word, lang = lang)
+            val request = TranslationRequest(word.word, lang)
+            return translationApi.translate(request)
                 .map(translationApiMapper::map)
                 .doOnSuccess { dictionaryEntry ->
                     val dbModel = dictionaryDomainToDataBaseModelMapper.map(dictionaryEntry)

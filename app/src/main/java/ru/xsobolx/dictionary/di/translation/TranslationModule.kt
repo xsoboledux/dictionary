@@ -1,26 +1,24 @@
 package ru.xsobolx.dictionary.di.translation
 
-import dagger.Binds
 import dagger.Module
-import ru.xsobolx.dictionary.presentation.translation.presenter.TranslationPresenter
+import dagger.Provides
+import retrofit2.Retrofit
+import ru.xsobolx.dictionary.data.db.base.AppDatabase
+import ru.xsobolx.dictionary.data.db.translation.dao.TranslationDAO
+import ru.xsobolx.dictionary.data.network.translation.TranslationApi
 
 @Module
-abstract class TranslationModule {
+class TranslationModule {
 
-//    @Provides
-//    @TranslationScope
-//    fun provideTranslationApi(retrofit: Retrofit): TranslationApi {
-//        return retrofit.create(TranslationApi::class.java)
-//    }
-//
-//    @Provides
-//    @TranslationScope
-//    fun provideTranslationDao(database: AppDatabase): TranslationDAO {
-//        return database.translationDao()
-//    }
-
+    @Provides
     @TranslationScope
-    @Binds
-    abstract fun provideTranslationPresenter(translationPresenter: TranslationPresenter): TranslationPresenter
+    fun provideTranslationApi(retrofit: Retrofit): TranslationApi {
+        return retrofit.create(TranslationApi::class.java)
+    }
 
+    @Provides
+    @TranslationScope
+    fun provideTranslationDao(database: AppDatabase): TranslationDAO {
+        return database.translationDao()
+    }
 }

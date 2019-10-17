@@ -12,6 +12,7 @@ import ru.xsobolx.dictionary.data.db.translation.dao.TranslationDAO
 import ru.xsobolx.dictionary.data.db.translation.mapper.DictionaryDataBaseToDomainModelMapper
 import ru.xsobolx.dictionary.data.db.translation.mapper.DictionaryDomainToDataBaseModelMapper
 import ru.xsobolx.dictionary.data.network.translation.TranslationApi
+import ru.xsobolx.dictionary.data.network.translation.TranslationRequest
 import ru.xsobolx.dictionary.data.network.translation.mapper.TranslationApiMapper
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.testDictionaryDataBaseModel
@@ -48,7 +49,8 @@ class TranslationRepositoryTest {
 
     @Test
     fun shouldReturnDictionaryEntryOnGetTranslation() {
-        `when`(translationApi.translate(testTranslatedWord.word, "en-ru")).thenReturn(
+        val request = TranslationRequest("test", "en-ru")
+        `when`(translationApi.translate(request)).thenReturn(
             Single.just(
                 testTranslationResponse
             )
