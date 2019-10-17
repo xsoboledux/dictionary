@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    
+    <TextView
+            android:id="@+id/word_to_translate_text_view"
+            android:layout_marginBottom="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            tools:text="Lorem Ipsum"
+            android:textColor="#000"
+            />
+
+    <TextView
+            android:id="@+id/translation_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/word_to_translate_text_view"
+            tools:text="lorem, ipsum, dolor, sit, amen"
+            android:textSize="18sp"
+        />
+
+    <ImageButton
+            android:id="@+id/favorite_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:src="@drawable/ic_favorite_button_image"
+            android:background="@android:color/transparent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            />
+
+    <TextView
+        android:id="@+id/language_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/favorite_button"
+            android:layout_centerVertical="true"
+            android:textColor="@color/colorAccent"
+            tools:text="EN-RU"
+        />
+
+</RelativeLayout>
