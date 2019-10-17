@@ -14,6 +14,7 @@ import javax.inject.Inject
 
 private const val TEXT_INPUT_DELAY_IN_MILLISECONDS = 500L
 
+
 @InjectViewState
 class TranslationPresenter
 @Inject constructor(

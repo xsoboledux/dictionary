@@ -4,16 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import dagger.Lazy
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import ru.xsobolx.dictionary.R
+import ru.xsobolx.dictionary.app.DictionaryApp
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language
 import ru.xsobolx.dictionary.presentation.translation.presenter.TranslationPresenter
 import ru.xsobolx.dictionary.presentation.translation.view.TranslationView
 import javax.inject.Inject
-import javax.inject.Provider
 
 class TranslationFragment : MvpAppCompatFragment(), TranslationView {
 
@@ -21,10 +22,10 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
     lateinit var translationPresenter: TranslationPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<TranslationPresenter>
+    lateinit var daggerPresenter: Lazy<TranslationPresenter>
 
     @ProvidePresenter
-    fun providePresenter() = presenterProvider.get()
+    fun providePresenter(): TranslationPresenter = daggerPresenter.get()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +36,8 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (activity?.application as DictionaryApp).appComponent?.translationScreenComponentBuilder()
+            ?.build()
         super.onCreate(savedInstanceState)
     }
 
