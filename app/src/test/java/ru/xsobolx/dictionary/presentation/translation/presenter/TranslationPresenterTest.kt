@@ -83,24 +83,6 @@ class TranslationPresenterTest {
     }
 
     @Test
-    fun shouldSetProperFromLanguage() {
-        val actual = Language.DE
-        presenter.onFromLanguageChanged(actual)
-
-        val expected = Language.DE
-        verify(translationViewState, times(1)).setFromLanguage(expected)
-    }
-
-    @Test
-    fun shouldSetProperToLanguage() {
-        val actual = Language.ES
-        presenter.onToLanguageChanged(actual)
-
-        val expected = Language.ES
-        verify(translationViewState, times(1)).setToLanguage(expected)
-    }
-
-    @Test
     fun shouldSwitchLanguages() {
         presenter.switchLanguage()
 
