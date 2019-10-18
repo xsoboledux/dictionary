@@ -37,8 +37,8 @@ class TranslationPresenterTest {
         MockitoAnnotations.initMocks(this)
         presenter =
             TranslationPresenter(translateUseCase)
-        presenter.setFromLanguage(Language.EN)
-        presenter.setToLanguage(Language.RU)
+        presenter.onFromLanguageChanged(Language.EN)
+        presenter.onToLanguageChanged(Language.RU)
         presenter.attachView(translationView)
         presenter.setViewState(translationViewState)
     }
@@ -85,7 +85,7 @@ class TranslationPresenterTest {
     @Test
     fun shouldSetProperFromLanguage() {
         val actual = Language.DE
-        presenter.setFromLanguage(actual)
+        presenter.onFromLanguageChanged(actual)
 
         val expected = Language.DE
         verify(translationViewState, times(1)).setFromLanguage(expected)
@@ -94,7 +94,7 @@ class TranslationPresenterTest {
     @Test
     fun shouldSetProperToLanguage() {
         val actual = Language.ES
-        presenter.setToLanguage(actual)
+        presenter.onToLanguageChanged(actual)
 
         val expected = Language.ES
         verify(translationViewState, times(1)).setToLanguage(expected)

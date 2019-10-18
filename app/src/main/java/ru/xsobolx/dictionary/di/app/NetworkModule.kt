@@ -39,6 +39,7 @@ class NetworkModule {
         rxJava2CallAdapterFactory: RxJava2CallAdapterFactory
     ): Retrofit {
         return Retrofit.Builder()
+            .baseUrl("https://translate.yandex.net/")
             .client(okHttpClient)
             .addCallAdapterFactory(rxJava2CallAdapterFactory)
             .addConverterFactory(gsonConverterFactory)

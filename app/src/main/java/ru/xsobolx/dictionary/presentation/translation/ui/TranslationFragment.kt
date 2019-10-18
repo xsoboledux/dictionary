@@ -36,9 +36,18 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (activity?.application as DictionaryApp).appComponent?.translationScreenComponentBuilder()
+        (activity?.application as DictionaryApp).appComponent?.translationComponentBuilder()
             ?.build()
+            ?.translationScreenComponentBuilder()
+            ?.build()
+            ?.inject(this)
         super.onCreate(savedInstanceState)
+        translationPresenter.onFromLanguageChanged(Language.EN)
+        translationPresenter.onToLanguageChanged(Language.RU)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun showTranslation(dictionaryEntry: DictionaryEntry) {

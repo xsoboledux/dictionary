@@ -54,14 +54,12 @@ class TranslationPresenter
         viewState?.showError(error.message)
     }
 
-    fun setFromLanguage(language: Language) {
+    fun onFromLanguageChanged(language: Language) {
         fromLanguage = language
-        viewState?.setFromLanguage(fromLanguage)
     }
 
-    fun setToLanguage(language: Language) {
+    fun onToLanguageChanged(language: Language) {
         toLanguage = language
-        viewState?.setToLanguage(toLanguage)
     }
 
     fun onTextChanged(text: String) {
