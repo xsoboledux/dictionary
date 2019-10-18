@@ -1,12 +1,19 @@
 package ru.xsobolx.dictionary.presentation.translation.presenter
 
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import moxy.InjectViewState
+import ru.xsobolx.dictionary.domain.translation.GetAllLanguagesUseCase
+import ru.xsobolx.dictionary.domain.translation.GetLanguageUseCase
+import ru.xsobolx.dictionary.domain.translation.SetLanguageUseCase
 import ru.xsobolx.dictionary.domain.translation.TranslateUseCase
-import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
-import ru.xsobolx.dictionary.domain.translation.model.Language
-import ru.xsobolx.dictionary.domain.translation.model.TranslatedWord
+import ru.xsobolx.dictionary.domain.translation.model.*
 import ru.xsobolx.dictionary.presentation.base.BasePresenter
 import ru.xsobolx.dictionary.presentation.translation.view.TranslationView
 import java.util.concurrent.TimeUnit
@@ -18,30 +25,74 @@ private const val TEXT_INPUT_DELAY_IN_MILLISECONDS = 500L
 @InjectViewState
 class TranslationPresenter
 @Inject constructor(
-    private val translationUseCase: TranslateUseCase
+    private val translationUseCase: TranslateUseCase,
+    private val getLanguageUseCase: GetLanguageUseCase,
+    private val getAllLanguagesUseCase: GetAllLanguagesUseCase,
+    private val setLanguageUseCase: SetLanguageUseCase
 ) : BasePresenter<TranslationView>() {
     private val textSubject = PublishSubject.create<String>()
-    private lateinit var fromLanguage: Language
-    private lateinit var toLanguage: Language
+    private val fromLanguageSubject = BehaviorSubject.create<Language>()
+    private val toLanguageSubject = BehaviorSubject.create<Language>()
+    private var switchtLanguageSubscription: Disposable? = null
 
     override fun onAttach(view: TranslationView?) {
-        if (!this::fromLanguage.isInitialized) {
-            throw AssertionError("fromLanguage must be initialized")
-        }
-        if (!this::toLanguage.isInitialized) {
-            throw AssertionError("toLanguage must be initialized")
-        }
-        val translateSubscription =
-            textSubject.debounce(TEXT_INPUT_DELAY_IN_MILLISECONDS, TimeUnit.MILLISECONDS)
-                .switchMap { text ->
-                    val translatedWord = TranslatedWord(text, fromLanguage, toLanguage)
-                    translationUseCase.execute(translatedWord)
-                        .toObservable()
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnEach { viewState?.showLoading() }
-                .subscribe(::handleSuccessTranslation, ::handleError)
+        val allLanguages = getAllLanguagesUseCase.execute(Unit)
+            .cache()
+        val fromLanguage = getLanguageUseCase.execute(TranslationDirection.FROM)
+            .doOnSuccess { fromLanguageSubject.onNext(it.language) }
+        val toLanguage = getLanguageUseCase.execute(TranslationDirection.TO)
+            .doOnSuccess { toLanguageSubject.onNext(it.language) }
+
+        val viewStateSubscription = Single.zip(
+            allLanguages,
+            fromLanguage,
+            toLanguage,
+            Function3<Set<Language>, LanguageEntity, LanguageEntity, TranslateScreenLanguagedViewModel> { all, from, to ->
+                TranslateScreenLanguagedViewModel(
+                    all,
+                    from.language,
+                    to.language
+                )
+            }
+        )
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(::setLanguages, ::handleError)
+        subscriptions.add(viewStateSubscription)
+
+        val translateSubscription = Observable.zip(
+            fromLanguageSubject,
+            toLanguageSubject,
+            BiFunction<Language, Language, Pair<Language, Language>> { from, to -> from to to })
+            .withLatestFrom(textSubject, BiFunction<Pair<Language, Language>, String, TranslatedWord> { langPair, text ->
+                val (from, to) = langPair
+                TranslatedWord(text, from, to)
+            })
+            .debounce(TEXT_INPUT_DELAY_IN_MILLISECONDS, TimeUnit.MILLISECONDS)
+            .switchMapSingle { translationUseCase.execute(it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(::handleSuccessTranslation, ::handleError)
         subscriptions.add(translateSubscription)
+
+        val setFromLanguageSubscription = fromLanguageSubject.switchMapSingle { lang ->
+            val languageEntity = LanguageEntity(lang, TranslationDirection.FROM)
+            setLanguageUseCase.execute(languageEntity)
+        }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ view?.setFromLanguage(it.language) }, ::handleError)
+        subscriptions.add(setFromLanguageSubscription)
+
+        val setToLanguageSubscription = toLanguageSubject.switchMapSingle { lang ->
+            val languageEntity = LanguageEntity(lang, TranslationDirection.TO)
+            setLanguageUseCase.execute(languageEntity)
+        }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ view?.setToLanguage(it.language) }, ::handleError)
+        subscriptions.add(setToLanguageSubscription)
+    }
+
+    private fun setLanguages(viewModel: TranslateScreenLanguagedViewModel) {
+        viewState?.hideLoading()
+        viewState?.render(viewModel)
     }
 
     private fun handleSuccessTranslation(dictionaryEntry: DictionaryEntry) {
@@ -55,11 +106,11 @@ class TranslationPresenter
     }
 
     fun onFromLanguageChanged(language: Language) {
-        fromLanguage = language
+        fromLanguageSubject.onNext(language)
     }
 
     fun onToLanguageChanged(language: Language) {
-        toLanguage = language
+        toLanguageSubject.onNext(language)
     }
 
     fun onTextChanged(text: String) {
@@ -67,10 +118,22 @@ class TranslationPresenter
     }
 
     fun switchLanguage() {
-        val temp = fromLanguage
-        fromLanguage = toLanguage
-        toLanguage = temp
-        viewState?.setFromLanguage(fromLanguage)
-        viewState?.setToLanguage(toLanguage)
+        switchtLanguageSubscription = Observable.zip(
+            fromLanguageSubject,
+            toLanguageSubject,
+            BiFunction<Language, Language, Pair<Language, Language>> { from, to -> from to to }
+        )
+            .subscribe{ langPair ->
+                val (from, to) = langPair
+                onFromLanguageChanged(to)
+                onToLanguageChanged(from)
+            }
+        subscriptions.add(switchtLanguageSubscription!!)
     }
 }
+
+data class TranslateScreenLanguagedViewModel(
+    val allLanguages: Set<Language>,
+    val fromLanguage: Language,
+    val toLanguage: Language
+)

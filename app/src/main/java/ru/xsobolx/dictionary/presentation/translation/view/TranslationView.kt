@@ -5,6 +5,7 @@ import moxy.viewstate.strategy.StateStrategyType
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language
 import ru.xsobolx.dictionary.presentation.base.BaseMvpView
+import ru.xsobolx.dictionary.presentation.translation.presenter.TranslateScreenLanguagedViewModel
 
 interface TranslationView : BaseMvpView {
 
@@ -16,4 +17,7 @@ interface TranslationView : BaseMvpView {
 
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun setToLanguage(language: Language)
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun render(viewModel: TranslateScreenLanguagedViewModel)
 }

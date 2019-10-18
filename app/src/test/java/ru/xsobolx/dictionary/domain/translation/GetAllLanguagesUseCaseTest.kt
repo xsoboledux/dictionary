@@ -2,7 +2,6 @@ package ru.xsobolx.dictionary.domain.translation
 
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
