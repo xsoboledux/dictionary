@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations
 import ru.xsobolx.dictionary.data.prefs.base.PrefsStorage
 import ru.xsobolx.dictionary.data.repositories.translation.LanguageRepository.Companion.FROM_LANGUAGE_KEY
 import ru.xsobolx.dictionary.data.repositories.translation.LanguageRepository.Companion.TO_LANGUAGE_KEY
+import ru.xsobolx.dictionary.domain.translation.model.Language
 import ru.xsobolx.dictionary.domain.translation.model.LanguageEntity
 import ru.xsobolx.dictionary.domain.translation.model.TranslationDirection
 import ru.xsobolx.dictionary.domain.translation.testFromLanguageEntity
@@ -61,6 +62,16 @@ class LanguageRepositoryTest {
         actual.subscribe(testSubscriber)
 
         val expected = testToLanguageEntity
+        testSubscriber.assertResult(expected)
+    }
+
+    @Test
+    fun shouldReturnLanguages() {
+        val testSubscriber = TestObserver<Set<Language>>()
+        languageRepository.getLanguages()
+            .subscribe(testSubscriber)
+
+        val expected = setOf(Language.RU, Language.EN, Language.DE, Language.ES)
         testSubscriber.assertResult(expected)
     }
 }

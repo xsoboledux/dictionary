@@ -19,8 +19,14 @@ interface LanguageRepository {
 
     fun setLanguage(languageEntity: LanguageEntity): Completable
 
+    fun getLanguages(): Single<Set<Language>>
+
     class Impl
     @Inject constructor(private val prefsStorage: PrefsStorage) : LanguageRepository {
+        override fun getLanguages(): Single<Set<Language>> {
+            return Single.just(Language.values().toSet())
+        }
+
         override fun setLanguage(languageEntity: LanguageEntity): Completable {
             return Completable.fromAction {
                 val key = mapDirectionToKey(languageEntity.translationDirection)
