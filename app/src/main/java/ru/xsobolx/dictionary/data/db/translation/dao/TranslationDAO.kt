@@ -11,7 +11,7 @@ import ru.xsobolx.dictionary.data.db.translation.model.DictionaryDBModel
 @Dao
 interface TranslationDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertDictionaryEntry(entry: DictionaryDBModel) : Completable
+    fun insertDictionaryEntry(entry: DictionaryDBModel)
 
     @Query("UPDATE $DICTIONARY_ENTRIES_TABLE_NAME SET isFavorite = :isFavorite WHERE word = :word")
     fun updateDictionaryEntry(word: String, isFavorite: Boolean) : Completable

@@ -18,5 +18,4 @@ interface AppComponent {
 
     fun translationComponentBuilder(): TranslationComponent.Builder
 
-    fun phrasebookScreenComponentBuilder(): PhrasebookScreenComponent.Builder
 }

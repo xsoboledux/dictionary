@@ -3,6 +3,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:padding="12dp"
+        android:background="#387"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     
@@ -17,7 +18,7 @@
             />
 
     <TextView
-            android:id="@+id/translation_edit_text"
+            android:id="@+id/translation_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/word_to_translate_text_view"

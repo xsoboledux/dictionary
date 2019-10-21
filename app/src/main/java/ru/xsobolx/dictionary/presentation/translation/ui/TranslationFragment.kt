@@ -16,7 +16,6 @@ import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language
 import ru.xsobolx.dictionary.domain.translation.model.TranslatedWord
 import ru.xsobolx.dictionary.presentation.base.RxTextWather
-import ru.xsobolx.dictionary.presentation.main.ui.MainActivity
 import ru.xsobolx.dictionary.presentation.translation.presenter.LanguagesViewModel
 import ru.xsobolx.dictionary.presentation.translation.presenter.TranslationPresenter
 import ru.xsobolx.dictionary.presentation.translation.view.TranslationView
@@ -73,6 +72,10 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
         switchLanguagesButton.setOnClickListener {
             translationPresenter.onSwitchLanguages(languagesViewModel!!)
         }
+        setUpEditText()
+    }
+
+    private fun setUpEditText() {
         textWatcher = RxTextWather()
         translateEditText.addTextChangedListener(textWatcher)
         if (textListenSubscription != null) {

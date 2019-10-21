@@ -3,6 +3,7 @@ package ru.xsobolx.dictionary.di.translation
 import dagger.Subcomponent
 import ru.xsobolx.dictionary.data.db.translation.dao.TranslationDAO
 import ru.xsobolx.dictionary.data.network.translation.TranslationApi
+import ru.xsobolx.dictionary.di.presentation.phrasebook.PhrasebookScreenComponent
 import ru.xsobolx.dictionary.di.presentation.translate.TranslationScreenComponent
 import ru.xsobolx.dictionary.domain.translation.*
 
@@ -28,4 +29,6 @@ interface TranslationComponent {
     fun getAllLanguagesUseCase(): GetAllLanguagesUseCase
 
     fun translationScreenComponentBuilder(): TranslationScreenComponent.Builder
+
+    fun phrasebookScreenComponentBuilder(): PhrasebookScreenComponent.Builder
 }

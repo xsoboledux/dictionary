@@ -6,14 +6,15 @@ import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language
 import javax.inject.Inject
 
-interface TranslationApiMapper : Mapper<TranslationResponse, DictionaryEntry> {
+interface TranslationApiMapper : Mapper<Pair<String, TranslationResponse>, DictionaryEntry> {
     class Impl @Inject constructor() : TranslationApiMapper {
-        override fun map(value: TranslationResponse): DictionaryEntry {
+        override fun map(value: Pair<String, TranslationResponse>): DictionaryEntry {
+            val (word, response) = value
             return DictionaryEntry(
-                word = "",
-                translation = value.text.joinToString(", "),
-                fromLanguage = mapLanguage(value.lang).first,
-                toLanguage = mapLanguage(value.lang).second
+                word = word,
+                translation = response.text.joinToString(", "),
+                fromLanguage = mapLanguage(response.lang).first,
+                toLanguage = mapLanguage(response.lang).second
             )
         }
 

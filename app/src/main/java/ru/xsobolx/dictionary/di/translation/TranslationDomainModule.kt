@@ -56,4 +56,8 @@ interface TranslationDomainModule {
     @TranslationScope
     @Binds
     fun provideLanguageRepository(repository: LanguageRepository.Impl): LanguageRepository
+
+    @TranslationScope
+    @Binds
+    fun provideMakeFavoriteUseCase(useCase: MakeTranslationFavoriteUseCase.Impl): MakeTranslationFavoriteUseCase
 }
