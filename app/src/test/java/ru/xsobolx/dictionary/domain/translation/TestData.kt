@@ -41,3 +41,9 @@ val testToLanguageEntity = LanguageEntity(
     translationDirection = TranslationDirection.TO,
     language = Language.RU
 )
+
+val testLanguagesSet = setOf(Language.DE, Language.EN, Language.ES, Language.RU)
+
+val testFromLanguage = LanguageEntity(Language.EN, TranslationDirection.FROM)
+
+val testToLanguage = LanguageEntity(Language.RU, TranslationDirection.TO)

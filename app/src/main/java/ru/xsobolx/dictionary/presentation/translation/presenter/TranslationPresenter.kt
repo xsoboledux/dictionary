@@ -37,11 +37,8 @@ class TranslationPresenter
 
     override fun onAttach(view: TranslationView?) {
         val allLanguages = getAllLanguagesUseCase.execute(Unit)
-            .cache()
         val fromLanguage = getLanguageUseCase.execute(TranslationDirection.FROM)
-            .doOnSuccess { fromLanguageSubject.onNext(it.language) }
         val toLanguage = getLanguageUseCase.execute(TranslationDirection.TO)
-            .doOnSuccess { toLanguageSubject.onNext(it.language) }
 
         val viewStateSubscription = Single.zip(
             allLanguages,
@@ -49,24 +46,30 @@ class TranslationPresenter
             toLanguage,
             Function3<Set<Language>, LanguageEntity, LanguageEntity, TranslateScreenLanguagedViewModel> { all, from, to ->
                 TranslateScreenLanguagedViewModel(
-                    all,
-                    from.language,
-                    to.language
+                    allLanguages = all,
+                    fromLanguage = from.language,
+                    toLanguage = to.language
                 )
             }
         )
+            .doOnSubscribe { viewState?.showLoading() }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(::setLanguages, ::handleError)
+            .subscribe(::showLanguages, ::handleError)
         subscriptions.add(viewStateSubscription)
 
         val translateSubscription = Observable.zip(
             fromLanguageSubject,
             toLanguageSubject,
-            BiFunction<Language, Language, Pair<Language, Language>> { from, to -> from to to })
-            .withLatestFrom(textSubject, BiFunction<Pair<Language, Language>, String, TranslatedWord> { langPair, text ->
-                val (from, to) = langPair
-                TranslatedWord(text, from, to)
-            })
+            BiFunction<Language, Language, Pair<Language, Language>> { from, to ->
+                print("from subj: $from")
+                print("to subj: $to")
+                from to to })
+            .withLatestFrom(
+                textSubject,
+                BiFunction<Pair<Language, Language>, String, TranslatedWord> { langPair, text ->
+                    val (from, to) = langPair
+                    TranslatedWord(text, from, to)
+                })
             .debounce(TEXT_INPUT_DELAY_IN_MILLISECONDS, TimeUnit.MILLISECONDS)
             .switchMapSingle { translationUseCase.execute(it) }
             .observeOn(AndroidSchedulers.mainThread())
@@ -90,7 +93,9 @@ class TranslationPresenter
         subscriptions.add(setToLanguageSubscription)
     }
 
-    private fun setLanguages(viewModel: TranslateScreenLanguagedViewModel) {
+    private fun showLanguages(viewModel: TranslateScreenLanguagedViewModel) {
+        fromLanguageSubject.onNext(viewModel.fromLanguage)
+        toLanguageSubject.onNext(viewModel.toLanguage)
         viewState?.hideLoading()
         viewState?.render(viewModel)
     }
@@ -101,6 +106,7 @@ class TranslationPresenter
     }
 
     private fun handleError(error: Throwable) {
+        print("error: $error" )
         viewState?.hideLoading()
         viewState?.showError(error.message)
     }
@@ -123,7 +129,7 @@ class TranslationPresenter
             toLanguageSubject,
             BiFunction<Language, Language, Pair<Language, Language>> { from, to -> from to to }
         )
-            .subscribe{ langPair ->
+            .subscribe { langPair ->
                 val (from, to) = langPair
                 onFromLanguageChanged(to)
                 onToLanguageChanged(from)

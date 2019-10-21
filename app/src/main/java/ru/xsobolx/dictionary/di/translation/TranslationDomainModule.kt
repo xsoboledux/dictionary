@@ -5,10 +5,9 @@ import dagger.Module
 import ru.xsobolx.dictionary.data.db.translation.mapper.DictionaryDataBaseToDomainModelMapper
 import ru.xsobolx.dictionary.data.db.translation.mapper.DictionaryDomainToDataBaseModelMapper
 import ru.xsobolx.dictionary.data.network.translation.mapper.TranslationApiMapper
+import ru.xsobolx.dictionary.data.repositories.translation.LanguageRepository
 import ru.xsobolx.dictionary.data.repositories.translation.TranslationRepository
-import ru.xsobolx.dictionary.domain.translation.GetAllSavedTranslationUseCase
-import ru.xsobolx.dictionary.domain.translation.SearchTranslationUseCase
-import ru.xsobolx.dictionary.domain.translation.TranslateUseCase
+import ru.xsobolx.dictionary.domain.translation.*
 
 @Module
 interface TranslationDomainModule {
@@ -40,4 +39,21 @@ interface TranslationDomainModule {
     @TranslationScope
     @Binds
     fun provideApiMapper(mapper: TranslationApiMapper.Impl): TranslationApiMapper
+
+
+    @TranslationScope
+    @Binds
+    fun provideGetLanguageUseCase(useCase: GetLanguageUseCase.Impl): GetLanguageUseCase
+
+    @TranslationScope
+    @Binds
+    fun provideSetLanguageUseCase(useCase: SetLanguageUseCase.Impl): SetLanguageUseCase
+
+    @TranslationScope
+    @Binds
+    fun provideGetAllLanguagesUseCase(useCase: GetAllLanguagesUseCase.Impl): GetAllLanguagesUseCase
+
+    @TranslationScope
+    @Binds
+    fun provideLanguageRepository(repository: LanguageRepository.Impl): LanguageRepository
 }
