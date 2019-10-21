@@ -19,5 +19,5 @@ interface TranslationView : BaseMvpView {
     fun setToLanguage(language: Language)
 
     @StateStrategyType(AddToEndSingleStrategy::class)
-    fun render(viewModel: TranslateScreenLanguagedViewModel)
+    fun showLanguages(viewModel: TranslateScreenLanguagedViewModel)
 }

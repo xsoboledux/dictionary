@@ -75,7 +75,7 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun render(viewModel: TranslateScreenLanguagedViewModel) {
+    override fun showLanguages(viewModel: TranslateScreenLanguagedViewModel) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
