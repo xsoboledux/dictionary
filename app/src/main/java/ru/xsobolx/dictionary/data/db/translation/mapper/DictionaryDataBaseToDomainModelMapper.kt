@@ -12,7 +12,7 @@ interface DictionaryDataBaseToDomainModelMapper : Mapper<DictionaryDBModel, Dict
         override fun map(value: DictionaryDBModel): DictionaryEntry {
             return DictionaryEntry(
                 word = value.word,
-                translation = value.translation.toString(),
+                translation = value.translation,
                 fromLanguage = value.fromLanguage,
                 toLanguage = value.toLanguage,
                 isFavorite = value.isFavorite

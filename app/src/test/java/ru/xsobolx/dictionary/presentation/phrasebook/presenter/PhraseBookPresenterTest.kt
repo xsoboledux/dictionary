@@ -47,7 +47,7 @@ class PhraseBookPresenterTest {
     @Test
     fun shouldShowAllSavedTranslationsOnFirstAttach() {
         val actual = listOf(testEntry)
-        `when`(getAllSavedTranslationUseCase.execute(null)).thenReturn(Single.just(actual))
+        `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.just(actual))
 
         presenter.attachView(phraseBookView)
         rule.scheduler.triggerActions()
@@ -65,7 +65,7 @@ class PhraseBookPresenterTest {
         val allEntries = listOf(testEntry, testEntry, testEntry)
         val searchedEntry = testEntry
         `when`(searchTranslationUseCase.execute("test")).thenReturn(Single.just(listOf(searchedEntry)))
-        `when`(getAllSavedTranslationUseCase.execute(null)).thenReturn(Single.just(allEntries))
+        `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.just(allEntries))
 
         presenter.attachView(phraseBookView)
         presenter.onTextChanged("test")
@@ -73,17 +73,15 @@ class PhraseBookPresenterTest {
 
         val expectAll = listOf(testEntry, testEntry, testEntry)
         val expectSearched = listOf(testEntry)
-        verify(phraseBookView, times(2)).showLoading()
         verify(phraseBookViewState, times(1)).showEntries(expectAll)
         verify(phraseBookViewState, times(1)).showEntries(expectSearched)
-        verify(phraseBookViewState, times(2)).hideLoading()
         verify(phraseBookViewState, never()).showError(ArgumentMatchers.anyString())
     }
 
     @Test
     fun shouldShowError() {
-        val actualError = Throwable("test_error")
-        `when`(getAllSavedTranslationUseCase.execute(null)).thenReturn(Single.error(actualError))
+        val actualError = Throwable(message = "test_error")
+        `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.error(actualError))
 
         presenter.attachView(phraseBookView)
         rule.scheduler.triggerActions()

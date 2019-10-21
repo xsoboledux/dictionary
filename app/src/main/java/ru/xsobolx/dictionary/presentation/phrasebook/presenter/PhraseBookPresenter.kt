@@ -21,7 +21,7 @@ class PhraseBookPresenter
 
     override fun onAttach(view: PhraseBookView?) {
         val getAllSavedTranslationsObservable = Observable.defer {
-            getAllSavedTranslationUseCase.execute(null)
+            getAllSavedTranslationUseCase.execute(Unit)
                 .toObservable()
         }
         val searchTranslations = textSubject
