@@ -28,7 +28,7 @@ class GetLanguageUseCaseTest {
     @Test
     fun shouldReturnFromLanguageEntity() {
         val translationDirection = TranslationDirection.FROM
-        val actualLanguageEntity = testFromLanguageEntity
+        val actualLanguageEntity = fromEnLanguageEntity
         `when`(languageRepository.getLanguage(translationDirection)).thenReturn(
             Single.just(
                 actualLanguageEntity
@@ -50,7 +50,7 @@ class GetLanguageUseCaseTest {
     @Test
     fun shouldReturnToLanguageEntity() {
         val translationDirection = TranslationDirection.TO
-        val actualLanguageEntity = testToLanguageEntity
+        val actualLanguageEntity = toRuLanguageEntity
         `when`(languageRepository.getLanguage(translationDirection)).thenReturn(
             Single.just(
                 actualLanguageEntity

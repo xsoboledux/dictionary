@@ -12,7 +12,7 @@ import ru.xsobolx.dictionary.R
 import ru.xsobolx.dictionary.app.DictionaryApp
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language
-import ru.xsobolx.dictionary.presentation.translation.presenter.TranslateScreenLanguagedViewModel
+import ru.xsobolx.dictionary.presentation.translation.presenter.LanguagesViewModel
 import ru.xsobolx.dictionary.presentation.translation.presenter.TranslationPresenter
 import ru.xsobolx.dictionary.presentation.translation.view.TranslationView
 import javax.inject.Inject
@@ -75,7 +75,7 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun showLanguages(viewModel: TranslateScreenLanguagedViewModel) {
+    override fun showLanguages(viewModel: LanguagesViewModel) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

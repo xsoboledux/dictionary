@@ -24,7 +24,7 @@ class SetLanguageUseCaseTest {
 
     @Test
     fun shouldSetLanguageAndReturnThisLanguage() {
-        val actualLanguageEntity = testFromLanguageEntity
+        val actualLanguageEntity = fromEnLanguageEntity
         `when`(languageRepository.setLanguage(actualLanguageEntity)).thenReturn(Completable.complete())
 
         val testSubscriber = TestObserver<LanguageEntity>()
@@ -32,7 +32,7 @@ class SetLanguageUseCaseTest {
         actual.subscribe(testSubscriber)
 
         verify(languageRepository, times(1)).setLanguage(actualLanguageEntity)
-        val expected = testFromLanguageEntity.copy()
+        val expected = fromEnLanguageEntity.copy()
         testSubscriber.assertResult(expected)
     }
 }

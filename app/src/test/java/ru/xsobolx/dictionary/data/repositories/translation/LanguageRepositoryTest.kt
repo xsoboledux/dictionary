@@ -9,11 +9,11 @@ import org.mockito.MockitoAnnotations
 import ru.xsobolx.dictionary.data.prefs.base.PrefsStorage
 import ru.xsobolx.dictionary.data.repositories.translation.LanguageRepository.Companion.FROM_LANGUAGE_KEY
 import ru.xsobolx.dictionary.data.repositories.translation.LanguageRepository.Companion.TO_LANGUAGE_KEY
+import ru.xsobolx.dictionary.domain.translation.fromEnLanguageEntity
 import ru.xsobolx.dictionary.domain.translation.model.Language
 import ru.xsobolx.dictionary.domain.translation.model.LanguageEntity
 import ru.xsobolx.dictionary.domain.translation.model.TranslationDirection
-import ru.xsobolx.dictionary.domain.translation.testFromLanguageEntity
-import ru.xsobolx.dictionary.domain.translation.testToLanguageEntity
+import ru.xsobolx.dictionary.domain.translation.toRuLanguageEntity
 
 class LanguageRepositoryTest {
 
@@ -29,7 +29,7 @@ class LanguageRepositoryTest {
 
     @Test
     fun shouldSetLanguage() {
-        val langEntity = testFromLanguageEntity
+        val langEntity = fromEnLanguageEntity
 
         val testSubscriber = TestObserver<Unit>()
         val actual = languageRepository.setLanguage(langEntity)
@@ -48,7 +48,7 @@ class LanguageRepositoryTest {
         val actual = languageRepository.getLanguage(translationDirection)
         actual.subscribe(testSubscriber)
 
-        val expected = testFromLanguageEntity
+        val expected = fromEnLanguageEntity
         testSubscriber.assertResult(expected)
     }
 
@@ -61,7 +61,7 @@ class LanguageRepositoryTest {
         val actual = languageRepository.getLanguage(translationDirection)
         actual.subscribe(testSubscriber)
 
-        val expected = testToLanguageEntity
+        val expected = toRuLanguageEntity
         testSubscriber.assertResult(expected)
     }
 

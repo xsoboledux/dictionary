@@ -3,6 +3,7 @@ package ru.xsobolx.dictionary.domain.translation
 import ru.xsobolx.dictionary.data.db.translation.model.DictionaryDBModel
 import ru.xsobolx.dictionary.data.network.translation.TranslationResponse
 import ru.xsobolx.dictionary.domain.translation.model.*
+import ru.xsobolx.dictionary.presentation.translation.presenter.LanguagesViewModel
 
 val testEntry = DictionaryEntry(
     word = "test",
@@ -32,18 +33,23 @@ val testDictionaryDataBaseModel = DictionaryDBModel(
     isFavorite = true
 )
 
-val testFromLanguageEntity = LanguageEntity(
-    translationDirection = TranslationDirection.FROM,
-    language = Language.EN
-)
-
-val testToLanguageEntity = LanguageEntity(
-    translationDirection = TranslationDirection.TO,
-    language = Language.RU
-)
-
 val testLanguagesSet = setOf(Language.DE, Language.EN, Language.ES, Language.RU)
 
-val testFromLanguage = LanguageEntity(Language.EN, TranslationDirection.FROM)
+val fromEnLanguageEntity = LanguageEntity(Language.EN, TranslationDirection.FROM)
+val fromRuLanguageEntity = LanguageEntity(Language.RU, TranslationDirection.FROM)
 
-val testToLanguage = LanguageEntity(Language.RU, TranslationDirection.TO)
+val toRuLanguageEntity = LanguageEntity(Language.RU, TranslationDirection.TO)
+val toEnLanguageEntity = LanguageEntity(Language.EN, TranslationDirection.TO)
+
+val fromENToRULanguageModel = LanguagesViewModel(
+    allLanguages = testLanguagesSet,
+    fromLanguage = Language.EN,
+    toLanguage = Language.RU
+)
+
+val fromRUToEnLanguageModel = LanguagesViewModel(
+    allLanguages = testLanguagesSet,
+    fromLanguage = Language.RU,
+    toLanguage = Language.EN
+)
+
