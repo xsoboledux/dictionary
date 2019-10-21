@@ -11,7 +11,7 @@ interface TranslationApiMapper : Mapper<TranslationResponse, DictionaryEntry> {
         override fun map(value: TranslationResponse): DictionaryEntry {
             return DictionaryEntry(
                 word = "",
-                translation = value.text.toString(),
+                translation = value.text.joinToString(", "),
                 fromLanguage = mapLanguage(value.lang).first,
                 toLanguage = mapLanguage(value.lang).second
             )
@@ -19,7 +19,7 @@ interface TranslationApiMapper : Mapper<TranslationResponse, DictionaryEntry> {
 
         private fun mapLanguage(lang: String): Pair<Language, Language> {
             val langs = lang .split('-', limit = 2)
-                .map { Language.valueOf(it) }
+                .map { Language.valueOf(it.toUpperCase()) }
             return langs[0] to langs[1]
         }
     }
