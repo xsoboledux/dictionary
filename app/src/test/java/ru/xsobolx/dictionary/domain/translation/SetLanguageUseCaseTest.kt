@@ -33,6 +33,7 @@ class SetLanguageUseCaseTest {
 
         verify(languageRepository, times(1)).setLanguage(actualLanguageEntity)
         val expected = fromEnLanguageEntity.copy()
+        testSubscriber.awaitTerminalEvent()
         testSubscriber.assertResult(expected)
     }
 }

@@ -47,8 +47,7 @@ interface TranslationRepository {
 
         override fun getTranslation(word: TranslatedWord): Single<DictionaryEntry> {
             val lang = "${word.fromLanguage.lang}-${word.toLanguage.lang}"
-            val request = TranslationRequest(word.word, lang)
-            return translationApi.translate(request)
+            return translationApi.translate(lang = lang, text = word.word)
                 .map(translationApiMapper::map)
                 .doOnSuccess { dictionaryEntry ->
                     val dbModel = dictionaryDomainToDataBaseModelMapper.map(dictionaryEntry)

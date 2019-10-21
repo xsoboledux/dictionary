@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.*
 import dagger.Lazy
+import io.reactivex.disposables.Disposable
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -12,6 +14,9 @@ import ru.xsobolx.dictionary.R
 import ru.xsobolx.dictionary.app.DictionaryApp
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language
+import ru.xsobolx.dictionary.domain.translation.model.TranslatedWord
+import ru.xsobolx.dictionary.presentation.base.RxTextWather
+import ru.xsobolx.dictionary.presentation.main.ui.MainActivity
 import ru.xsobolx.dictionary.presentation.translation.presenter.LanguagesViewModel
 import ru.xsobolx.dictionary.presentation.translation.presenter.TranslationPresenter
 import ru.xsobolx.dictionary.presentation.translation.view.TranslationView
@@ -24,6 +29,20 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
 
     @Inject
     lateinit var daggerPresenter: Lazy<TranslationPresenter>
+
+    private lateinit var fromLanguageSpinner: Spinner
+    private lateinit var toLanguageSpinner: Spinner
+    private lateinit var switchLanguagesButton: ImageButton
+    private lateinit var translateEditText: EditText
+    private lateinit var translationTextView: TextView
+    private lateinit var progress: ProgressBar
+
+    private lateinit var fromLanguageAdapter: ArrayAdapter<Language>
+    private lateinit var toLanguageAdapter: ArrayAdapter<Language>
+    private lateinit var textWatcher: RxTextWather
+
+    private var textListenSubscription: Disposable? = null
+    private var languagesViewModel: LanguagesViewModel? = null
 
     @ProvidePresenter
     fun providePresenter(): TranslationPresenter = daggerPresenter.get()
@@ -43,39 +62,104 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
             ?.build()
             ?.inject(this)
         super.onCreate(savedInstanceState)
-        translationPresenter.onFromLanguageChanged(Language.EN)
-        translationPresenter.onToLanguageChanged(Language.RU)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setViews(view)
+        setLanguagesSpinners()
+
+        switchLanguagesButton.setOnClickListener {
+            translationPresenter.onSwitchLanguages(languagesViewModel!!)
+        }
+        textWatcher = RxTextWather()
+        translateEditText.addTextChangedListener(textWatcher)
+        if (textListenSubscription != null) {
+            textListenSubscription?.dispose()
+        }
+        textListenSubscription = textWatcher.observeTextChanges()
+            .filter { it.isNotEmpty() }
+            .subscribe { text ->
+                val translatedWord = TranslatedWord(
+                    word = text,
+                    fromLanguage = languagesViewModel?.fromLanguage!!,
+                    toLanguage = languagesViewModel?.toLanguage!!
+                )
+                translationPresenter.onTextChanged(translatedWord)
+            }
+    }
+
+    private fun setLanguagesSpinners() {
+        fromLanguageAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item)
+        fromLanguageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        toLanguageAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item)
+        toLanguageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        fromLanguageSpinner.adapter = fromLanguageAdapter
+        fromLanguageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                translationPresenter.onFromLanguageChanged(p0?.selectedItem as Language)
+            }
+        }
+        toLanguageSpinner.adapter = toLanguageAdapter
+        toLanguageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                translationPresenter.onToLanguageChanged(p0?.selectedItem as Language)
+            }
+
+        }
+    }
+
+    private fun setViews(view: View) {
+        fromLanguageSpinner = view.findViewById(R.id.from_language_spinner)
+        toLanguageSpinner = view.findViewById(R.id.to_language_spinner)
+        switchLanguagesButton = view.findViewById(R.id.switch_language_button)
+        translateEditText = view.findViewById(R.id.translate_edit_text)
+        translationTextView = view.findViewById(R.id.translation_text_view)
+        progress = view.findViewById(R.id.translate_progress)
     }
 
     override fun showTranslation(dictionaryEntry: DictionaryEntry) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        translationTextView.text = dictionaryEntry.translation
     }
 
     override fun setFromLanguage(language: Language) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        languagesViewModel = languagesViewModel?.copy(fromLanguage = language)
+        fromLanguageSpinner.setSelection(language.ordinal)
     }
 
     override fun setToLanguage(language: Language) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        languagesViewModel = languagesViewModel?.copy(toLanguage = language)
+        toLanguageSpinner.setSelection(language.ordinal)
     }
 
     override fun showLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        progress.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        progress.visibility = View.GONE
     }
 
     override fun showError(message: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
     override fun showLanguages(viewModel: LanguagesViewModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        languagesViewModel = viewModel
+        fromLanguageAdapter.addAll(viewModel.allLanguages)
+        fromLanguageAdapter.notifyDataSetChanged()
+        toLanguageAdapter.addAll(viewModel.allLanguages)
+        toLanguageAdapter.notifyDataSetChanged()
+        fromLanguageSpinner.setSelection(viewModel.fromLanguage.ordinal)
+        toLanguageSpinner.setSelection(viewModel.toLanguage.ordinal)
     }
 }

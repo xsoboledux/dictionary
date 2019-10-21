@@ -6,6 +6,7 @@ import ru.xsobolx.dictionary.data.prefs.base.PrefsStorage
 import ru.xsobolx.dictionary.domain.translation.model.Language
 import ru.xsobolx.dictionary.domain.translation.model.LanguageEntity
 import ru.xsobolx.dictionary.domain.translation.model.TranslationDirection
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 interface LanguageRepository {
@@ -45,7 +46,12 @@ interface LanguageRepository {
             return Single.fromCallable {
                 val key = mapDirectionToKey(direction)
                 val lang = prefsStorage.getString(key) as String
-                LanguageEntity(Language.valueOf(lang), direction)
+                val language = try {
+                    Language.valueOf(lang.toUpperCase())
+                } catch (err: IllegalArgumentException) {
+                    Language.EN
+                }
+                LanguageEntity(language, direction)
             }
         }
     }

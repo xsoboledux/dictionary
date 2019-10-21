@@ -3,10 +3,12 @@ package ru.xsobolx.dictionary.domain.translation
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import ru.xsobolx.dictionary.RxRule
 import ru.xsobolx.dictionary.data.repositories.translation.LanguageRepository
 import ru.xsobolx.dictionary.domain.translation.model.Language
 import ru.xsobolx.dictionary.domain.translation.model.LanguageEntity
@@ -65,6 +67,7 @@ class GetLanguageUseCaseTest {
             translationDirection = TranslationDirection.TO,
             language = Language.RU
         )
+        testSubscriber.awaitTerminalEvent()
         testSubscriber.assertResult(expected)
     }
 }
