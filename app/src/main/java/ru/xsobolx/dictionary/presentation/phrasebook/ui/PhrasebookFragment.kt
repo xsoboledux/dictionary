@@ -14,6 +14,7 @@ import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import dagger.Lazy
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import ru.xsobolx.dictionary.R
 import ru.xsobolx.dictionary.app.DictionaryApp
@@ -51,10 +52,8 @@ class PhrasebookFragment : MvpAppCompatFragment(), PhraseBookView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (activity?.application as DictionaryApp).appComponent?.translationComponentBuilder()
-            ?.build()
-            ?.phrasebookScreenComponentBuilder()
-            ?.build()
+        (activity?.application as DictionaryApp).appComponent?.translationComponent()
+            ?.phrasebookScreenComponent()
             ?.inject(this)
         super.onCreate(savedInstanceState)
     }
@@ -68,6 +67,7 @@ class PhrasebookFragment : MvpAppCompatFragment(), PhraseBookView {
             addTextChangedListener(textWatcher)
         }
         textWatchDisposable = textWatcher.observeTextChanges()
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({phraseBookPresenter.onTextChanged(it)}, {Log.e("PrasebookFragment", it.localizedMessage)})
 
         phrasebookAdapter = PhrasebookAdapter(

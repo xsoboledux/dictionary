@@ -15,6 +15,7 @@ interface GetAllSavedTranslationUseCase : UseCase<Any?, List<DictionaryEntry>> {
     ) : GetAllSavedTranslationUseCase {
         override fun execute(parameter: Any?): Single<List<DictionaryEntry>> {
             return translationRepository.getAllSavedTranslations()
+                .map { it.distinct() }
                 .subscribeOn(Schedulers.io())
         }
     }

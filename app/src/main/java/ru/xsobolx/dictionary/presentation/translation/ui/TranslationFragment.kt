@@ -55,10 +55,8 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (activity?.application as DictionaryApp).appComponent?.translationComponentBuilder()
-            ?.build()
-            ?.translationScreenComponentBuilder()
-            ?.build()
+        (activity?.application as DictionaryApp).appComponent?.translationComponent()
+            ?.translationScreenComponent()
             ?.inject(this)
         super.onCreate(savedInstanceState)
     }

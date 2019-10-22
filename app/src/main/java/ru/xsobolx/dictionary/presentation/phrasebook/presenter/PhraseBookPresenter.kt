@@ -1,8 +1,6 @@
 package ru.xsobolx.dictionary.presentation.phrasebook.presenter
 
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
-import io.reactivex.subjects.PublishSubject
 import moxy.InjectViewState
 import ru.xsobolx.dictionary.domain.translation.GetAllSavedTranslationUseCase
 import ru.xsobolx.dictionary.domain.translation.MakeTranslationFavoriteUseCase
@@ -19,36 +17,14 @@ class PhraseBookPresenter
     private val searchTranslationUseCase: SearchTranslationUseCase,
     private val makeTranslationFavoriteUseCase: MakeTranslationFavoriteUseCase
 ) : BasePresenter<PhraseBookView>() {
-    private val textSubject = PublishSubject.create<String>()
-    private val onFavoriteClickSubject = PublishSubject.create<DictionaryEntry>()
+    private var searchString: String = ""
 
     override fun onAttach(view: PhraseBookView?) {
-        val getAllSavedTranslationsObservable =
-            getAllSavedTranslationUseCase.execute(Unit)
-                .map { it.distinct() }
-                .cache()
-                .toObservable()
-
-        val searchTranslations = textSubject.startWith("")
-            .withLatestFrom(getAllSavedTranslationsObservable,
-                BiFunction<String, List<DictionaryEntry>, Pair<List<DictionaryEntry>, String>> { text, entries -> entries to text }
-            )
-            .map { entriesAndText ->
-                val (entries, text) = entriesAndText
-                entries.filter { entry -> searchPredicate(entry, text) }
-            }
+        val allSubscription = getAllSavedTranslationUseCase.execute(Unit)
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnEach { view?.showLoading() }
-            .subscribe(::handleSuccessGetAllTranslations, ::handleErrorGetAllTranslations)
-        subscriptions.add(searchTranslations)
-
-//        val makeFavoriteSubscription = onFavoriteClickSubject
-//            .throttleLast(200, TimeUnit.MILLISECONDS)
-//            .switchMapSingle { makeTranslationFavoriteUseCase.execute(it) }
-//            .switchMap { getAllSavedTranslationsObservable }
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({} , ::handleErrorGetAllTranslations)
-//        subscriptions.add(makeFavoriteSubscription)
+            .doOnEvent { _, _ -> view?.showLoading() }
+            .subscribe(::showEntries, ::handleErrorGetAllTranslations)
+        subscriptions.add(allSubscription)
     }
 
     private fun searchPredicate(
@@ -56,9 +32,14 @@ class PhraseBookPresenter
         text: String
     ) = dictionaryEntry.word.contains(text) || dictionaryEntry.translation.contains(text)
 
-    private fun handleSuccessGetAllTranslations(translations: List<DictionaryEntry>) {
+    private fun showEntries(translations: List<DictionaryEntry>) {
         viewState?.hideLoading()
-        viewState?.showEntries(translations)
+        viewState?.showEntries(translations.filter { dictionaryEntry ->
+            searchPredicate(
+                dictionaryEntry,
+                searchString
+            )
+        })
     }
 
     private fun handleErrorGetAllTranslations(error: Throwable) {
@@ -67,11 +48,24 @@ class PhraseBookPresenter
     }
 
     fun onTextChanged(text: String) {
-        textSubject.onNext(text)
+        val searchSubscription = getAllSavedTranslationUseCase.execute(Unit)
+            .map { translations ->
+                searchString = text
+                translations
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { viewState?.showLoading() }
+            .subscribe(::showEntries, ::handleErrorGetAllTranslations)
+        subscriptions.add(searchSubscription)
     }
 
     fun onFavoriteClick(dictionaryEntry: DictionaryEntry) {
         val newEntry = dictionaryEntry.copy(isFavorite = !dictionaryEntry.isFavorite)
-        onFavoriteClickSubject.onNext(newEntry)
+        val makeFavoriteSubscription = makeTranslationFavoriteUseCase.execute(newEntry)
+            .flatMap { getAllSavedTranslationUseCase.execute(Unit) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { viewState?.showLoading() }
+            .subscribe(::showEntries, ::handleErrorGetAllTranslations)
+        subscriptions.add(makeFavoriteSubscription)
     }
 }

@@ -47,13 +47,13 @@ class PhraseBookPresenterTest {
 
     @Test
     fun shouldShowAllSavedTranslationsOnFirstAttach() {
-        val actual = listOf(testEntry)
-        `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.just(actual))
+        val allEntries = listOf(testEntry, testEntry2, testEntry3)
+        `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.just(allEntries))
 
         presenter.attachView(phraseBookView)
         rule.scheduler.triggerActions()
 
-        val expect = listOf(testEntry)
+        val expect = listOf(testEntry, testEntry2, testEntry3)
         verifyZeroInteractions(searchTranslationUseCase)
         verify(phraseBookView, times(1)).showLoading()
         verify(phraseBookViewState, times(1)).showEntries(expect)
@@ -67,11 +67,13 @@ class PhraseBookPresenterTest {
         `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.just(allEntries))
 
         presenter.attachView(phraseBookView)
+        rule.scheduler.triggerActions()
+        verify(phraseBookViewState, times(1)).showEntries(allEntries)
         presenter.onTextChanged("test")
         rule.scheduler.triggerActions()
 
         val expectSearched = listOf(testEntry)
-        verify(phraseBookViewState).showEntries(expectSearched)
+        verify(phraseBookViewState, times(1)).showEntries(expectSearched)
         verify(phraseBookViewState, never()).showError(ArgumentMatchers.anyString())
     }
 
@@ -81,6 +83,8 @@ class PhraseBookPresenterTest {
         `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.just(allEntries))
 
         presenter.attachView(phraseBookView)
+        rule.scheduler.triggerActions()
+        verify(phraseBookViewState).showEntries(allEntries)
         presenter.onTextChanged("найти")
         rule.scheduler.triggerActions()
 

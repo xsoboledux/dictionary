@@ -9,11 +9,6 @@ import ru.xsobolx.dictionary.presentation.translation.ui.TranslationFragment
 @Subcomponent
 interface TranslationScreenComponent {
 
-    @Subcomponent.Builder
-    interface Builder {
-        fun build(): TranslationScreenComponent
-    }
-
     fun translationPresenter(): TranslationPresenter
 
     fun inject(fragment: TranslationFragment)

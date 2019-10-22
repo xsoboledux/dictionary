@@ -16,6 +16,6 @@ interface AppComponent {
 
     fun database(): AppDatabase
 
-    fun translationComponentBuilder(): TranslationComponent.Builder
+    fun translationComponent(): TranslationComponent
 
 }

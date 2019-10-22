@@ -72,20 +72,36 @@ class FavoritesPresenterTest {
 
     @Test
     fun shouldDeleteFromFavorites() {
+        val entryToClick = testEntry2().copy(isFavorite = testEntry2().isFavorite)
+        `when`(makeTranslationFavoriteUseCase.execute(entryToClick)).thenReturn(Single.just(Unit))
+        `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.just(getMixedEntries()))
 
+        presenter.attachView(favoritesView)
+        rule.scheduler.triggerActions()
+        val favoritesOnAttach = getFavoritesEntries()
+        verify(favoritesViewState, times(1)).showFavorites(favoritesOnAttach)
+
+        presenter.onFavoriteClick(entryToClick)
+
+        val expected = listOf(testEntry3())
+        verify(favoritesViewState, times(1)).showFavorites(expected)
     }
 
     private fun getMixedEntries(): List<DictionaryEntry> {
         val entry1 = testEntry
-        val entry2 = testEntry.copy(word = "test2", isFavorite = true)
-        val entry3 = testEntry.copy(word = "test3", isFavorite = true)
+        val entry2 = testEntry2()
+        val entry3 = testEntry3()
         val entry4 = testEntry.copy(word = "test4")
         return listOf(entry1, entry2, entry3, entry4)
     }
 
     private fun getFavoritesEntries(): List<DictionaryEntry> {
-        val entry2 = testEntry.copy(word = "test2", isFavorite = true)
-        val entry3 = testEntry.copy(word = "test3", isFavorite = true)
+        val entry2 = testEntry2()
+        val entry3 = testEntry3()
         return listOf(entry2, entry3)
     }
+
+    private fun testEntry3() = testEntry.copy(word = "test3", isFavorite = true)
+
+    private fun testEntry2() = testEntry.copy(word = "test2", isFavorite = true)
 }

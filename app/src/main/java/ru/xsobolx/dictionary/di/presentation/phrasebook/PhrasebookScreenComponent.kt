@@ -9,11 +9,6 @@ import ru.xsobolx.dictionary.presentation.phrasebook.ui.PhrasebookFragment
 @Subcomponent
 interface PhrasebookScreenComponent {
 
-    @Subcomponent.Builder
-    interface Builder {
-        fun build(): PhrasebookScreenComponent
-    }
-
     fun phrasebookPresenter(): PhraseBookPresenter
 
     fun inject(fragment: PhrasebookFragment)
