@@ -16,7 +16,7 @@ class TranslationApiMapperTest {
             text = listOf("тест", "испытание", "проверка")
         )
         val expected = DictionaryEntry(
-            word = "",
+            word = "test",
             translation = "тест, испытание, проверка",
             fromLanguage = Language.EN,
             toLanguage = Language.RU,
@@ -24,7 +24,7 @@ class TranslationApiMapperTest {
         )
 
         val mapper = TranslationApiMapper.Impl()
-        val actual = mapper.map(response)
+        val actual = mapper.map("test" to response)
 
         assertEquals(actual, expected)
     }

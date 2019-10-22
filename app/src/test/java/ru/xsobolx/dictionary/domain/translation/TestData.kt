@@ -13,6 +13,22 @@ val testEntry = DictionaryEntry(
     isFavorite = false
 )
 
+val testEntry2 = DictionaryEntry(
+    word = "find",
+    translation = "найти",
+    fromLanguage = Language.EN,
+    toLanguage = Language.RU,
+    isFavorite = false
+)
+
+val testEntry3 = DictionaryEntry(
+    word = "house",
+    translation = "дом",
+    fromLanguage = Language.EN,
+    toLanguage = Language.RU,
+    isFavorite = false
+)
+
 val testTranslatedWord = TranslatedWord(
     word = "test",
     fromLanguage = Language.EN,
@@ -30,7 +46,7 @@ val testDictionaryDataBaseModel = DictionaryDBModel(
     fromLanguage = Language.EN,
     toLanguage = Language.RU,
     translation = "тест",
-    isFavorite = true
+    isFavorite = false
 )
 
 val testLanguagesSet = setOf(Language.DE, Language.EN, Language.ES, Language.RU)

@@ -11,10 +11,10 @@ class PhrasebookViewHolder(
     itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
 
-    private lateinit var word: TextView
-    private lateinit var translation: TextView
-    private lateinit var favoriteButton: ImageButton
-    private lateinit var language: TextView
+    private var word: TextView
+    private var translation: TextView
+    private var favoriteButton: ImageButton
+    private var language: TextView
 
     init {
         word = itemView.findViewById(R.id.word_to_translate_text_view)

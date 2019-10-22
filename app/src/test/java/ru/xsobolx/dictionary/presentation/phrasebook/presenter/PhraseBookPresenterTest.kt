@@ -11,9 +11,7 @@ import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import ru.xsobolx.dictionary.RxRule
-import ru.xsobolx.dictionary.domain.translation.GetAllSavedTranslationUseCase
-import ru.xsobolx.dictionary.domain.translation.SearchTranslationUseCase
-import ru.xsobolx.dictionary.domain.translation.testEntry
+import ru.xsobolx.dictionary.domain.translation.*
 import ru.xsobolx.dictionary.presentation.phrasebook.view.PhraseBookView
 import ru.xsobolx.dictionary.presentation.phrasebook.view.`PhraseBookView$$State`
 
@@ -32,6 +30,8 @@ class PhraseBookPresenterTest {
     private lateinit var phraseBookView: PhraseBookView
     @Mock
     private lateinit var phraseBookViewState: `PhraseBookView$$State`
+    @Mock
+    private lateinit var makeTranslationFavoriteUseCase: MakeTranslationFavoriteUseCase
     private lateinit var presenter: PhraseBookPresenter
 
     @Before
@@ -39,7 +39,8 @@ class PhraseBookPresenterTest {
         MockitoAnnotations.initMocks(this)
         presenter = PhraseBookPresenter(
             getAllSavedTranslationUseCase,
-            searchTranslationUseCase
+            searchTranslationUseCase,
+            makeTranslationFavoriteUseCase
         )
         presenter.setViewState(phraseBookViewState)
     }
@@ -61,20 +62,30 @@ class PhraseBookPresenterTest {
     }
 
     @Test
-    fun shouldSearchTranslationsOnSearch() {
-        val allEntries = listOf(testEntry, testEntry, testEntry)
-        val searchedEntry = testEntry
-        `when`(searchTranslationUseCase.execute("test")).thenReturn(Single.just(listOf(searchedEntry)))
+    fun shouldSearchTranslationsOnSearchByWord() {
+        val allEntries = listOf(testEntry, testEntry2, testEntry3)
         `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.just(allEntries))
 
         presenter.attachView(phraseBookView)
         presenter.onTextChanged("test")
         rule.scheduler.triggerActions()
 
-        val expectAll = listOf(testEntry, testEntry, testEntry)
         val expectSearched = listOf(testEntry)
-        verify(phraseBookViewState, times(1)).showEntries(expectAll)
-        verify(phraseBookViewState, times(1)).showEntries(expectSearched)
+        verify(phraseBookViewState).showEntries(expectSearched)
+        verify(phraseBookViewState, never()).showError(ArgumentMatchers.anyString())
+    }
+
+    @Test
+    fun shouldSearchTranslationsOnSearchByTranslation() {
+        val allEntries = listOf(testEntry, testEntry2, testEntry3)
+        `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.just(allEntries))
+
+        presenter.attachView(phraseBookView)
+        presenter.onTextChanged("найти")
+        rule.scheduler.triggerActions()
+
+        val expected = listOf(testEntry2)
+        verify(phraseBookViewState).showEntries(expected)
         verify(phraseBookViewState, never()).showError(ArgumentMatchers.anyString())
     }
 

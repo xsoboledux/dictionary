@@ -1,9 +1,7 @@
 package ru.xsobolx.dictionary.presentation.phrasebook.presenter
 
-import android.util.Log
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import moxy.InjectViewState
 import ru.xsobolx.dictionary.domain.translation.GetAllSavedTranslationUseCase
@@ -12,7 +10,6 @@ import ru.xsobolx.dictionary.domain.translation.SearchTranslationUseCase
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.presentation.base.BasePresenter
 import ru.xsobolx.dictionary.presentation.phrasebook.view.PhraseBookView
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -26,37 +23,40 @@ class PhraseBookPresenter
     private val onFavoriteClickSubject = PublishSubject.create<DictionaryEntry>()
 
     override fun onAttach(view: PhraseBookView?) {
-        val getAllSavedTranslationsObservable = Observable.defer {
+        val getAllSavedTranslationsObservable =
             getAllSavedTranslationUseCase.execute(Unit)
                 .map { it.distinct() }
+                .cache()
                 .toObservable()
-        }.share()
 
-        val searchTranslations = textSubject
-            .startWith("")
-            .switchMap { text ->
-                if (text.isEmpty()) {
-                    return@switchMap getAllSavedTranslationsObservable
-                }
-                searchTranslationUseCase.execute(text)
-                    .toObservable()
+        val searchTranslations = textSubject.startWith("")
+            .withLatestFrom(getAllSavedTranslationsObservable,
+                BiFunction<String, List<DictionaryEntry>, Pair<List<DictionaryEntry>, String>> { text, entries -> entries to text }
+            )
+            .map { entriesAndText ->
+                val (entries, text) = entriesAndText
+                entries.filter { entry -> searchPredicate(entry, text) }
             }
             .observeOn(AndroidSchedulers.mainThread())
             .doOnEach { view?.showLoading() }
             .subscribe(::handleSuccessGetAllTranslations, ::handleErrorGetAllTranslations)
         subscriptions.add(searchTranslations)
 
-        val makeFavoriteSubscription = onFavoriteClickSubject
-            .throttleLast(200, TimeUnit.MILLISECONDS)
-            .switchMapSingle { makeTranslationFavoriteUseCase.execute(it) }
-            .switchMap { getAllSavedTranslationsObservable }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(::handleSuccessGetAllTranslations, ::handleErrorGetAllTranslations)
-        subscriptions.add(makeFavoriteSubscription)
+//        val makeFavoriteSubscription = onFavoriteClickSubject
+//            .throttleLast(200, TimeUnit.MILLISECONDS)
+//            .switchMapSingle { makeTranslationFavoriteUseCase.execute(it) }
+//            .switchMap { getAllSavedTranslationsObservable }
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({} , ::handleErrorGetAllTranslations)
+//        subscriptions.add(makeFavoriteSubscription)
     }
 
+    private fun searchPredicate(
+        dictionaryEntry: DictionaryEntry,
+        text: String
+    ) = dictionaryEntry.word.contains(text) || dictionaryEntry.translation.contains(text)
+
     private fun handleSuccessGetAllTranslations(translations: List<DictionaryEntry>) {
-        Log.d("PHRASEBOOK", "translations: $translations".toUpperCase())
         viewState?.hideLoading()
         viewState?.showEntries(translations)
     }

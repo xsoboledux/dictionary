@@ -13,7 +13,6 @@ import ru.xsobolx.dictionary.data.db.translation.dao.TranslationDAO
 import ru.xsobolx.dictionary.data.db.translation.mapper.DictionaryDataBaseToDomainModelMapper
 import ru.xsobolx.dictionary.data.db.translation.mapper.DictionaryDomainToDataBaseModelMapper
 import ru.xsobolx.dictionary.data.network.translation.TranslationApi
-import ru.xsobolx.dictionary.data.network.translation.TranslationRequest
 import ru.xsobolx.dictionary.data.network.translation.mapper.TranslationApiMapper
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.testDictionaryDataBaseModel
@@ -50,13 +49,18 @@ class TranslationRepositoryTest {
 
     @Test
     fun shouldReturnDictionaryEntryOnGetTranslation() {
-        val request = TranslationRequest("test", "en-ru")
-        `when`(translationApi.translate(request)).thenReturn(
+        `when`(
+            translationApi.translate(
+                text = "test",
+                lang = "en-ru",
+                key = ""
+            )
+        ).thenReturn(
             Single.just(
                 testTranslationResponse
             )
         )
-        `when`(translationApiMapper.map(testTranslationResponse)).thenReturn(testEntry)
+        `when`(translationApiMapper.map("test" to testTranslationResponse)).thenReturn(testEntry)
         `when`(dictionaryDomainToDataBaseModelMapper.map(testEntry)).thenReturn(
             testDictionaryDataBaseModel
         )
@@ -64,8 +68,8 @@ class TranslationRepositoryTest {
         val actual = translationRepository.getTranslation(testTranslatedWord)
         actual.subscribe(testSubscriber)
 
-        verify(translationApi, times(1)).translate(request)
-        verify(translationApiMapper, times(1)).map(testTranslationResponse)
+        verify(translationApi, times(1)).translate(text = "test", lang = "en-ru", key = "")
+        verify(translationApiMapper, times(1)).map("test" to testTranslationResponse)
         verify(dictionaryDomainToDataBaseModelMapper, times(1)).map(testEntry)
         verify(translationDAO, times(1)).insertDictionaryEntry(testDictionaryDataBaseModel)
         verifyNoMoreInteractions(translationApi)
