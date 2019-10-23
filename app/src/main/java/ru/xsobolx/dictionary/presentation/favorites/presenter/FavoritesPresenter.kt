@@ -37,9 +37,7 @@ class FavoritesPresenter
     fun onFavoriteClick(entry: DictionaryEntry) {
         val newEntry = entry.copy(isFavorite = !entry.isFavorite)
         val makeFavoriteSubscription = makeTranslationFavoriteUseCase.execute(newEntry)
-            .flatMap {
-               print("make translkation: $it")
-                getAllSavedTranslationUseCase.execute(Unit) }
+            .flatMap { getAllSavedTranslationUseCase.execute(Unit) }
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { viewState?.showLoading() }
             .subscribe(::showEntries, ::handleError)

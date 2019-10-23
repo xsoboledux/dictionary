@@ -72,16 +72,20 @@ class FavoritesPresenterTest {
 
     @Test
     fun shouldDeleteFromFavorites() {
-        val entryToClick = testEntry2().copy(isFavorite = testEntry2().isFavorite)
-        `when`(makeTranslationFavoriteUseCase.execute(entryToClick)).thenReturn(Single.just(Unit))
-        `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(Single.just(getMixedEntries()))
-
-        presenter.attachView(favoritesView)
-        rule.scheduler.triggerActions()
-        val favoritesOnAttach = getFavoritesEntries()
-        verify(favoritesViewState, times(1)).showFavorites(favoritesOnAttach)
+        val entryToClick = testEntry2()
+        val clickedEntry = entryToClick.copy(isFavorite = !entryToClick.isFavorite)
+        `when`(makeTranslationFavoriteUseCase.execute(clickedEntry)).thenReturn(Single.just(Unit))
+        `when`(getAllSavedTranslationUseCase.execute(Unit)).thenReturn(
+            Single.just(
+                listOf(
+                    clickedEntry,
+                    testEntry3()
+                )
+            )
+        )
 
         presenter.onFavoriteClick(entryToClick)
+        rule.scheduler.triggerActions()
 
         val expected = listOf(testEntry3())
         verify(favoritesViewState, times(1)).showFavorites(expected)
