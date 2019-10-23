@@ -12,18 +12,6 @@ import ru.xsobolx.dictionary.domain.translation.*
 @Subcomponent(modules = [TranslationDataSourceModule::class, TranslationDomainModule::class])
 interface TranslationComponent {
 
-    fun translateUseCase(): TranslateUseCase
-
-    fun getAllSavedTranslationUseCase(): GetAllSavedTranslationUseCase
-
-    fun searchTranslationUseCase(): SearchTranslationUseCase
-
-    fun getLanguageUseCase(): GetLanguageUseCase
-
-    fun setLanguageUseCase(): SetLanguageUseCase
-
-    fun getAllLanguagesUseCase(): GetAllLanguagesUseCase
-
     fun translationScreenComponent(): TranslationScreenComponent
 
     fun phrasebookScreenComponent(): PhrasebookScreenComponent

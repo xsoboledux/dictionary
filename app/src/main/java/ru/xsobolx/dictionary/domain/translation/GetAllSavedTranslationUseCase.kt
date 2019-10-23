@@ -7,13 +7,13 @@ import ru.xsobolx.dictionary.domain.base.UseCase
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import javax.inject.Inject
 
-interface GetAllSavedTranslationUseCase : UseCase<Any?, List<DictionaryEntry>> {
+interface GetAllSavedTranslationUseCase : UseCase<Unit, List<DictionaryEntry>> {
 
     class Impl @Inject
     constructor(
         private val translationRepository: TranslationRepository
     ) : GetAllSavedTranslationUseCase {
-        override fun execute(parameter: Any?): Single<List<DictionaryEntry>> {
+        override fun execute(parameter: Unit): Single<List<DictionaryEntry>> {
             return translationRepository.getAllSavedTranslations()
                 .map { it.distinct() }
                 .subscribeOn(Schedulers.io())

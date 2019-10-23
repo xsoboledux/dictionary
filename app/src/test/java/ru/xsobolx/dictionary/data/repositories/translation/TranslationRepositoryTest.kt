@@ -52,8 +52,7 @@ class TranslationRepositoryTest {
         `when`(
             translationApi.translate(
                 text = "test",
-                lang = "en-ru",
-                key = ""
+                lang = "en-ru"
             )
         ).thenReturn(
             Single.just(
@@ -68,7 +67,7 @@ class TranslationRepositoryTest {
         val actual = translationRepository.getTranslation(testTranslatedWord)
         actual.subscribe(testSubscriber)
 
-        verify(translationApi, times(1)).translate(text = "test", lang = "en-ru", key = "")
+        verify(translationApi, times(1)).translate(text = "test", lang = "en-ru")
         verify(translationApiMapper, times(1)).map("test" to testTranslationResponse)
         verify(dictionaryDomainToDataBaseModelMapper, times(1)).map(testEntry)
         verify(translationDAO, times(1)).insertDictionaryEntry(testDictionaryDataBaseModel)

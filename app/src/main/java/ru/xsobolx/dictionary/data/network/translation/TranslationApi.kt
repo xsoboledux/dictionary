@@ -9,8 +9,7 @@ import retrofit2.http.Query
 interface TranslationApi {
     @GET("/api/v1.5/tr.json/translate?")
     fun translate(@Query("lang") lang: String,
-                  @Query("text") text: String,
-                  @Query("key") key: String) : Single<TranslationResponse>
+                  @Query("text") text: String) : Single<TranslationResponse>
 }
 
 data class TranslationResponse(

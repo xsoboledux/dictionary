@@ -16,8 +16,6 @@ import ru.xsobolx.dictionary.presentation.translation.view.TranslationView
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-private const val TIME_OUT_IN_MILLISECONDS = 500L
-
 @InjectViewState
 class TranslationPresenter
 @Inject constructor(
@@ -32,7 +30,6 @@ class TranslationPresenter
         loadLanguages()
 
         val translateSubscription = translateSubject.filter { it.word.isNotEmpty() }
-            .debounce(TIME_OUT_IN_MILLISECONDS, TimeUnit.MILLISECONDS)
             .switchMapSingle { translationUseCase.execute(it) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(::handleSuccessTranslation, ::handleError)

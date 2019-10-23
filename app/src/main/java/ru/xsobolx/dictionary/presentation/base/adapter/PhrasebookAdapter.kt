@@ -7,7 +7,7 @@ import ru.xsobolx.dictionary.R
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 
 class PhrasebookAdapter(
-    var items: MutableList<DictionaryEntry> = mutableListOf(),
+    private var items: List<DictionaryEntry> = listOf(),
     private val onFavoriteButtonClick: (DictionaryEntry) -> Unit
 ) : RecyclerView.Adapter<PhrasebookViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhrasebookViewHolder {

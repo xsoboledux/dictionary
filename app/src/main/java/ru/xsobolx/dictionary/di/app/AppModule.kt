@@ -5,7 +5,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [DataBaseModule::class])
+@Module
 class AppModule(private val context: Application) {
 
     @Provides

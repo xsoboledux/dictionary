@@ -27,7 +27,7 @@ class GetAllSavedTranslationUseCaseTest {
     fun shouldReturnListOfDictionaryEntries() {
         `when`(translationRepository.getAllSavedTranslations()).thenReturn(Single.just(listOf(testEntry)))
 
-        val actual = getAllSavedTranslationUseCase.execute(null)
+        val actual = getAllSavedTranslationUseCase.execute(Unit)
         actual.subscribe(testSubscriber)
 
         verify(translationRepository, times(1)).getAllSavedTranslations()

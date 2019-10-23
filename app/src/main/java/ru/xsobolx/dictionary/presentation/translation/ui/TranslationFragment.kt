@@ -15,7 +15,7 @@ import ru.xsobolx.dictionary.app.DictionaryApp
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
 import ru.xsobolx.dictionary.domain.translation.model.Language
 import ru.xsobolx.dictionary.domain.translation.model.TranslatedWord
-import ru.xsobolx.dictionary.presentation.base.RxTextWather
+import ru.xsobolx.dictionary.presentation.base.RxTextWatcher
 import ru.xsobolx.dictionary.presentation.translation.presenter.LanguagesViewModel
 import ru.xsobolx.dictionary.presentation.translation.presenter.TranslationPresenter
 import ru.xsobolx.dictionary.presentation.translation.view.TranslationView
@@ -38,7 +38,7 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
 
     private lateinit var fromLanguageAdapter: ArrayAdapter<Language>
     private lateinit var toLanguageAdapter: ArrayAdapter<Language>
-    private lateinit var textWatcher: RxTextWather
+    private lateinit var textWatcher: RxTextWatcher
 
     private var textListenSubscription: Disposable? = null
     private var languagesViewModel: LanguagesViewModel? = null
@@ -74,7 +74,7 @@ class TranslationFragment : MvpAppCompatFragment(), TranslationView {
     }
 
     private fun setUpEditText() {
-        textWatcher = RxTextWather()
+        textWatcher = RxTextWatcher()
         translateEditText.addTextChangedListener(textWatcher)
         if (textListenSubscription != null) {
             textListenSubscription?.dispose()

@@ -5,7 +5,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import io.reactivex.Completable
 import io.reactivex.observers.TestObserver
 import org.junit.After
 import org.junit.Before
@@ -43,12 +42,9 @@ class TranslationDAOTest {
 
     @Test
     fun getAllEntriesAfterInsert() {
-        val insertSubscriber = TestObserver<DictionaryEntry>()
-        Completable.concat(listOf(translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel1),
-            translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel2),
-            translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel3)))
-            .subscribe(insertSubscriber)
-        insertSubscriber.assertComplete()
+        translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel1)
+        translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel2)
+        translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel3)
 
         val loadAllSubscriber = TestObserver<List<DictionaryDBModel>>()
         translationDAO.loadAllDictionaryEntries()
@@ -66,10 +62,7 @@ class TranslationDAOTest {
     @Test
     fun shouldUpdateDictionaryEntry() {
         val oldDictionaryEntry = testDictionaryDataBaseModel1
-        val insertSubscriber = TestObserver<DictionaryDBModel>()
         translationDAO.insertDictionaryEntry(oldDictionaryEntry)
-            .subscribe(insertSubscriber)
-        insertSubscriber.assertComplete()
         val loadAllOldDictionaryEntriesSubscriber = TestObserver<List<DictionaryDBModel>>()
         translationDAO.loadAllDictionaryEntries()
             .subscribe(loadAllOldDictionaryEntriesSubscriber)
@@ -89,12 +82,9 @@ class TranslationDAOTest {
 
     @Test
     fun testSearch() {
-        val insertSubscriber = TestObserver<DictionaryEntry>()
-        Completable.concat(listOf(translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel1),
-            translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel2),
-            translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel3)))
-            .subscribe(insertSubscriber)
-        insertSubscriber.assertComplete()
+        translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel1)
+        translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel2)
+        translationDAO.insertDictionaryEntry(testDictionaryDataBaseModel3)
 
         val expected = testDictionaryDataBaseModel3
         val searchSubscriber = TestObserver<List<DictionaryDBModel>>()

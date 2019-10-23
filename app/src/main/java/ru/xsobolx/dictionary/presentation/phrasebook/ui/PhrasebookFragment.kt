@@ -19,7 +19,7 @@ import io.reactivex.disposables.Disposable
 import ru.xsobolx.dictionary.R
 import ru.xsobolx.dictionary.app.DictionaryApp
 import ru.xsobolx.dictionary.domain.translation.model.DictionaryEntry
-import ru.xsobolx.dictionary.presentation.base.RxTextWather
+import ru.xsobolx.dictionary.presentation.base.RxTextWatcher
 import ru.xsobolx.dictionary.presentation.base.adapter.PhrasebookAdapter
 import ru.xsobolx.dictionary.presentation.phrasebook.presenter.PhraseBookPresenter
 import ru.xsobolx.dictionary.presentation.phrasebook.view.PhraseBookView
@@ -40,7 +40,7 @@ class PhrasebookFragment : MvpAppCompatFragment(), PhraseBookView {
     private lateinit var phrasebookRecycler: RecyclerView
     private lateinit var phrasebookAdapter: PhrasebookAdapter
     private lateinit var progress: ProgressBar
-    private lateinit var textWatcher: RxTextWather
+    private lateinit var textWatcher: RxTextWatcher
     private var textWatchDisposable: Disposable? = null
 
     override fun onCreateView(
@@ -62,7 +62,7 @@ class PhrasebookFragment : MvpAppCompatFragment(), PhraseBookView {
         super.onViewCreated(view, savedInstanceState)
 
         progress = view.findViewById(R.id.phrasebook_progress_bar)
-        textWatcher = RxTextWather()
+        textWatcher = RxTextWatcher()
         searchEditText = view.findViewById<EditText>(R.id.search_edit_text).apply {
             addTextChangedListener(textWatcher)
         }

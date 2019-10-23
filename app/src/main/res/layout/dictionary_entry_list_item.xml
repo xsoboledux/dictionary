@@ -3,7 +3,6 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:padding="12dp"
-        android:background="#387"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     
@@ -31,7 +30,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="12dp"
-            android:src="@drawable/ic_favorite_button_image"
+            android:src="@drawable/ic_favorite_button_true"
             android:background="@android:color/transparent"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"

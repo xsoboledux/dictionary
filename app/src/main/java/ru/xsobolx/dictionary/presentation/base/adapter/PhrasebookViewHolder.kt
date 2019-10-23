@@ -29,12 +29,12 @@ class PhrasebookViewHolder(
         translation.text = dictionaryEntry.translation
         language.text = "${dictionaryEntry.fromLanguage}-${dictionaryEntry.toLanguage}"
         val imagage = if (dictionaryEntry.isFavorite) {
-            R.drawable.ic_favorite_button_image
+            R.drawable.ic_favorite_button_true
         } else {
-            R.drawable.ic_action_favorites
+            R.drawable.ic_favorite_button_image_false
         }
         favoriteButton.setImageDrawable(itemView.context.getDrawable(imagage))
-        itemView.setOnClickListener {
+        favoriteButton.setOnClickListener {
             onFavoriteButtonClick(dictionaryEntry)
         }
     }

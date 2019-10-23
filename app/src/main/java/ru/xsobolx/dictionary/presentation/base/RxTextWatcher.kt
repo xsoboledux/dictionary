@@ -6,8 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
-class RxTextWather : TextWatcher {
-
+class RxTextWatcher : TextWatcher {
 
     companion object {
         const val DEFAULT_DEBOUNCE_IN_MILLS = 500L
@@ -27,6 +26,6 @@ class RxTextWather : TextWatcher {
     }
 
     fun observeTextChanges(): Observable<String> {
-        return subjectTextWatcher.debounce(DEFAULT_DEBOUNCE_IN_MILLS, TimeUnit.MICROSECONDS)
+        return subjectTextWatcher.debounce(DEFAULT_DEBOUNCE_IN_MILLS, TimeUnit.MILLISECONDS)
     }
 }
