@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.1"
@@ -14,6 +16,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "API_KEY", API_KEY
+        buildConfigField "String", "API_BASE_URL", API_BASE_URL
     }
     buildTypes {
         release {
@@ -21,38 +26,68 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
+
+ext {
+    androidx_version = "1.1.0"
+    dagger_version = "2.24"
+    moxyVersion = "2.0.2"
+    retrofit_version = "2.6.2"
+    room_version = "2.2.0"
+    rx_java_version = "2.2.13"
+    rx_android_version = "2.1.1"
+    gson_version = "2.8.6"
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
-
-    implementation 'com.android.support:recyclerview-v7:29.0.0'
+    implementation "androidx.appcompat:appcompat:$androidx_version"
+    implementation "androidx.core:core-ktx:$androidx_version"
+    implementation "androidx.recyclerview:recyclerview:1.0.0"
+    implementation "com.google.android.material:material:1.0.0"
 
     // rxjava
-    implementation "io.reactivex.rxjava2:rxjava:2.2.13"
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation "io.reactivex.rxjava2:rxjava:$rx_java_version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
 
     // dagger
-    implementation 'com.google.dagger:dagger:2.24'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.24'
+    implementation "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     // moxy
-    implementation 'com.arello-mobile:moxy:1.5.5'
-    annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.5'
-    implementation 'com.arello-mobile:moxy-android:1.5.5'
+    implementation "com.github.moxy-community:moxy:$moxyVersion"
+    kapt "com.github.moxy-community:moxy-compiler:$moxyVersion"
+    implementation "com.github.moxy-community:moxy-androidx:$moxyVersion"
 
     // gson
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation "com.google.code.gson:gson:$gson_version"
 
     // retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.2.1"
+
+    // room
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:core:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation ("android.arch.core:core-testing:$room_version") {
+        exclude module: 'support-compat'
+        exclude module: 'support-annotations'
+        exclude module: 'support-core-utils'
+    }
+
+    // mockito
+    testImplementation "org.mockito:mockito-core:2.25.0"
 }
