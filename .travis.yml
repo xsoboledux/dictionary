@@ -1,0 +1,7 @@
+language: android
+dist: trusty
+
+android:
+  components:
+    - buil-tools-29.0.1
+    - android-29
